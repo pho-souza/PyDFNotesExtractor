@@ -1,7 +1,7 @@
-Sample Module Repository
+PyDFNotesExtractor
 ========================
 
-This simple project is an example repo for Python projects.
+This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
 
 `Learn more <http://www.kennethreitz.org/essays/repository-structure-and-python>`_.
 

@@ -12,13 +12,13 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='sample',
+    name='pdfannot',
     version='0.1.0',
-    description='Sample package for Python-Guide.org',
+    description='PDF annotations extractor using PyMuPDF',
     long_description=readme,
-    author='Kenneth Reitz',
-    author_email='me@kennethreitz.com',
-    url='https://github.com/kennethreitz/samplemod',
+    author='Pedro Souza',
+    author_email='pho.souza.mail@gmail.com',
+    url='https://github.com/pho-souza/PyDFNotesExtractor',
     license=license,
     packages=find_packages(exclude=('tests', 'docs'))
 )
