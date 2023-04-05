@@ -23,14 +23,15 @@ DEFAULT_COLOR = (1,1,0)
 DEFAULT_COLOR = (1,1,0)
 
 PATH = pathlib.Path(__file__).resolve().parent / 'templates'
+# PATH = "pypdfannot/templates/"
 TEMPLATE_ENVIRONMENT = Environment(
     autoescape=False,
-    loader=FileSystemLoader(str(PATH)),
+    loader=FileSystemLoader(PATH),
     trim_blocks=True,
     lstrip_blocks=False
 )
 
-DEFAULT_TEMPLATE = "template_default.md"
+DEFAULT_TEMPLATE = "template_html.html"
 
 
 
@@ -224,6 +225,8 @@ def md_export(annotations,title = "Title",template = DEFAULT_TEMPLATE):
     """
     Export the annotation using some jinja template.
     """
+    print(PATH)
+
     md_template = TEMPLATE_ENVIRONMENT.get_template(template)
     retorno = md_template.render(title = title,
     anotacoes = annotations)

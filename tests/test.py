@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from pdfannot.pypdfannot import Note_extractor
-import pdfannot.utils as utils
+from pypdfannot.pypdfannot import Note_extractor
+import pypdfannot.utils as utils
 import json
 import re
 

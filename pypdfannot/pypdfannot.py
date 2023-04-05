@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pdfannot.utils as utils
+import pypdfannot.utils as utils
 import fitz
 import re
 import os
@@ -106,9 +106,11 @@ class Note_extractor():
                 pdf_page = self.pdf[page]
 
                 # Remove annotations in the page
-                for annots in pdf_page.annots():
-                    pdf_page.delete_annot(annots)
-
+                try:
+                    for annots in pdf_page.annots():
+                        pdf_page.delete_annot(annots)
+                except:
+                    pass
                 user_space = annot["rect_coord"]
                 # area = pdf_page.get_pixmap(dpi = 300)
                 area = pdf_page.bound()
@@ -126,17 +128,17 @@ class Note_extractor():
 
                 if not os.path.exists(location):
                     os.mkdir(location)
-                if not os.path.exists(location+"/"+folder):
+                if not os.path.exists(location+"//"+folder):
                     os.mkdir(location+"/"+folder)
 
-                file = re.sub(".*/","",self.file)
+                file = re.sub("(.*/|.*\\\\)","",self.file)
                 file = re.sub("[.]pdf","",file)
                 page = page +1
 
                 file_name = file+"_p"+str(page)+'_'+str(annot_number) + ".png"
 
                 file_export = location+"/"+folder+file_name
-                file_export = re.sub("/+","/",file_export)
+                # file_export = os.path.dirname(file_export)
 
 
                 # print(pdf_page,' - annotation number: ', annot_number)
@@ -145,7 +147,7 @@ class Note_extractor():
                 img_folder = re.sub("/+","/",img_folder)
 
                 img = pdf_page.get_pixmap(clip = clip,dpi = 300)
-                # print(file_export)
+                print(file_export)
                 img.save(file_export)
 
                 if os.path.exists(file_export):
@@ -154,7 +156,7 @@ class Note_extractor():
                 else:
                     annot['has_img'] = False
                     annot['img_path'] = ""
-        self.reload()
+            self.reload()
 
     def reorder_custom(self,criteria = ['page',"start_xy"], ordenation = 'asc'):
         self.highlights = utils.annots_reorder_custom(self.highlights,criteria=criteria,ordenation=ordenation)
@@ -183,9 +185,12 @@ class Note_extractor():
                 # print(page_number)
 
                 # Remove annotations in the page
-                for annots in pdf_page.annots():
-                    if annots.type[1] != "Ink":
-                        pdf_page.delete_annot(annots)
+                try:
+                    for annots in pdf_page.annots():
+                        if annots.type[1] != "Ink":
+                            pdf_page.delete_annot(annots)
+                except:
+                    print("No annotations to exclude")
 
 
                 user_space = annot["rect_coord"]
