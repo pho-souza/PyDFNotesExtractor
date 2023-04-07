@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import pypdfannot.pypdfannot as pdf_extract
-import pypdfannot.utils as utils
+import PyDFannots.pydfannots as pdf_extract
+import PyDFannots.utils as utils
 import typing as typ
 from importlib import reload
 import json
 import re
-import sys
+from itertools import chain
 import os
 import pathlib
 import csv
@@ -30,45 +30,42 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     p.add_argument('--version', '-v', action='version',
                    version='%(prog)s ' + __version__)
     
-    p.add_argument("input", metavar="INFILE", type=pathlib.Path,
+    p.add_argument("--input","-i", type=pathlib.Path, required=True,
                    help="PDF files to process", nargs='+')
     
-    p.add_argument("output", metavar="OUTFILE", type=pathlib.Path,
+    p.add_argument("--output","-o", type=pathlib.Path, required=False,
                    help="Export file", nargs='+')
     
     g = p.add_argument_group('Basic options')
     
-    g.add_argument("-p", "--progress", default=False, action="store_true",
-                   help="Emit progress information to stderr.")
-    
-    g.add_argument("--adjust-color", "-ac", default=True,action="store_true",
+    g.add_argument("--adjust-color", "-ac", default=False,action="store_true",
                    help = "Extract colors from annotations.")
     
-    g.add_argument("--adjust-date", "-ad", default=True,action="store_true",
+    g.add_argument("--adjust-date", "-ad", default=False,action="store_true",
                    help = "Adjust date to the format YYYY-MM-DD HH:mm:SS")
     
-    g.add_argument("--adjust-text", "-at", default=True,action="store_true",
+    g.add_argument("--adjust-text", "-at", default=False,action="store_true",
                    help = "Adjust text to eliminate hyphens and linebreaks")
     
-    g.add_argument("--columns", "-c", default=1,action="store_true",
+    g.add_argument("--columns", "-c", default=1,
                    help = "Reorder the annotations using same size columns")
     
-    g.add_argument("--tolerance", "-tol", default=0.1,action="store_true",
+    g.add_argument("--tolerance", "-tol", default=0.1,
                    help = "Tolerance interval for columns. Default is 0.1")
     
-    g.add_argument("--image", "-img", default=True,action="store_true",
+    g.add_argument("--image", "-img", default=False,action="store_true",
                    help = "Extract rectangle annotations as image")
     
-    g.add_argument("--ink-annotation", "-ink", default=True,action="store_true",
+    g.add_argument("--ink-annotation", "-ink", default=False,action="store_true",
                    help = "Extract ink annotations as image")
     
-    g.add_argument("--template", "-temp", default="",action="store_true",
+    g.add_argument("--template", "-temp", default="",
                    help = "Select jinja2 template")
     
     g.add_argument("--reorder-group", "-rg", default=["page"], nargs="+",
                    help = "Select order criteria. Default is page and y position")
     
-    g.add_argument("--format","-f",default="",action="store_true",
+    g.add_argument("--format","-f",default="",
                    help = "Set the format export. Options are csv or json.")
     
     args = p.parse_args()
@@ -94,10 +91,10 @@ def main():
     print(export_folder)
     
     file_title = os.path.basename(input_file)
+    file_title = re.sub("[.].*$","",file_title)
+    print(file_title)
     
     extension = re.sub(".*[.](.*)$","\\1",file_title)
-    
-    print(extension)
 
 
 
@@ -112,8 +109,8 @@ def main():
     if args.adjust_text:
         extractor.adjust_text()
 
-    if args.reorder_group and args.reorder_group != ["page","type"]:
-        extractor.reorder_custom(criteria=args.reorder_group,ordenation='asc')
+    if args.reorder_group:
+        extractor.reorder_custom(criteria=args.reorder_group,ascending=True)
         
     if args.columns > 1 and args.tolerance:
         extractor.reorder_columns(columns=args.columns,tolerance=args.tolerance)
@@ -127,39 +124,35 @@ def main():
     highlight = extractor.highlights
     
     if args.format == "json":
-        highlight = json.dumps(highlight)
+        highlight = json.dumps(highlight,ensure_ascii=True,indent=4)
         with open(export_file, mode="w",encoding="utf-8") as f:
             f.write(highlight)
             return 0
     elif args.format == "csv":
         names_fields = []
         for annot in highlight:
-            names =list(annot.keys())
+            names = list(annot.keys())
             names_fields.append(names)
+        names_fields = list(chain(*names_fields))
+        print(names_fields)
         names_fields = list(set(names_fields))
         with open(export_file,'w') as csvfile:
-            writer = csv.DictWriter(csvfile,fieldnames=names_fields)
+            writer = csv.DictWriter(csvfile,fieldnames=names_fields,doublequote=True,lineterminator="\n")
             writer.writeheader()
             writer.writerows(highlight)
         return 0
     else:
         if args.template == "":
-            md_print = utils.md_export(annotations=highlight,title = "")
+            md_print = utils.md_export(annotations=highlight,title = file_title)
+            with open(export_file, "w", encoding="utf-8") as f:
+                f.write(md_print)
+                return 0
         else:
-            md_print = utils.md_export(annotations=highlight,title = "",template=args.template)
-        with open(export_file, "w", encoding="utf-8") as f:
-            f.write(md_print)
-            
-            
-    
-
-
-    # md_print = utils.md_export(annotations=highlight,title = "",template="template_html.html")
-
-    # with open(html_export,'w', encoding='utf-8') as f:
-    #     f.write(md_print)
-
-
-# with open(export_file, "w",encoding='utf-8') as outfile:
-#     outfile.write(a)
-    
+            template_options = os.listdir("pypdfannot/templates/")
+            if args.template in template_options:
+                md_print = utils.md_export(annotations=highlight,title = file_title,template=args.template)
+                with open(export_file, "w", encoding="utf-8") as f:
+                    f.write(md_print)
+                    return 0
+            else:
+                print("Unrecognized template. The options for template are: ",template_options)

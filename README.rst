@@ -1,10 +1,18 @@
-PyDFNotesExtractor
+# PyDFNotesExtractor
 ========================
 
 This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
 
-`Learn more <http://www.kennethreitz.org/essays/repository-structure-and-python>`_.
+
+---
+# Installation
+
+# Usage
+
+The basic usage is:
+
+```
+python pydfannots.py -i tests//PDF_WIKI.pdf -o tests//output//pywiki.html -img -ink -at -ad -ac
+```
 
 ---------------
-
-If you want to learn more about ``setup.py`` files, check out `this repository <https://github.com/kennethreitz/setup.py>`_.

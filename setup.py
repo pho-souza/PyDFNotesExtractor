@@ -12,9 +12,9 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='pdfannot',
+    name='PyDFannots',
     version='0.1.0',
-    description='PDF annotations extractor using PyMuPDF',
+    description='PDF annotations extract using PyMuPDF',
     long_description=readme,
     author='Pedro Souza',
     author_email='pho.souza.mail@gmail.com',

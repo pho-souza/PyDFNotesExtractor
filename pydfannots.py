@@ -4,5 +4,5 @@
 # to by run directly from a source tree clone.
 
 if __name__ == '__main__':
-    import pypdfannot.cli
-    pypdfannot.cli.main()
+    import PyDFannots.cli
+    PyDFannots.cli.main()

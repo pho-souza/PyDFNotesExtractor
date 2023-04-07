@@ -132,7 +132,7 @@ def colors_names(colors_hls: tuple) -> str:
         return "Red"
 
 
-def annots_reorder_custom(annotations,criteria = [], ordenation = "asc") -> dict:
+def annots_reorder_custom(annotations,criteria = [], ascending = True) -> dict:
         """
         This function reordenate the annotations based on criteria order
         """
@@ -149,8 +149,11 @@ def annots_reorder_custom(annotations,criteria = [], ordenation = "asc") -> dict
         #     return annotations
 
         temp = annotations.copy()
-
-        temp = sorted(temp,key=operator.itemgetter(*criteria))
+        
+        if ascending:
+            temp = sorted(temp,key=operator.itemgetter(*criteria))
+        else:
+            temp = sorted(temp,key=operator.itemgetter(*criteria),reverse=True)
 
         return temp
 
@@ -229,5 +232,5 @@ def md_export(annotations,title = "Title",template = DEFAULT_TEMPLATE):
 
     md_template = TEMPLATE_ENVIRONMENT.get_template(template)
     retorno = md_template.render(title = title,
-    anotacoes = annotations)
+    highlights = annotations)
     return retorno

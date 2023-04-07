@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pypdfannot.utils as utils
+import PyDFannots.utils as utils
 import fitz
 import re
 import os
@@ -9,8 +9,38 @@ class Note_extractor():
     def __init__(self,file: str):
         self.file = file
         self.pdf = fitz.open(self.file)
+        
+    def __exit__(self):
+        self.close()
 
     def notes_extract(self):
+        """
+        Extract annotations from PDF file.
+        
+        The method will extract annotations from all the pages in PDF file and assign to highlight variable.
+        The informations collected are: type, page, author, rect_coord, start_xy,
+        text, conent, created, modified, color_name.
+        
+        Description of the variables:
+            type: the type of annotation. The types are defined in PDF reference. The most common types are:
+                - Highlight
+                - Text
+                - FreeText
+                - Underline
+                - Squared
+                - Ink
+                - Squiggly
+            page: the page position in the PDF file (start from 1)
+            author: the author of the annotation
+            rect_coord: coordinates of the annotation. Defined as list of 4 elements.
+                The 1st is the x0 position. The 2nd is the y0 position. The 3rd and the 4th are the x1 and y1.
+            start_xy: the x0, y0 coordinate.
+            text: text notes taken by the user in the annotation.
+            content: text extract from the annotation positions in the PDF file.
+            created: date where annotation was created.
+            modified: date where annotation was modified.
+            color_name: color extract from annotation in RGB list.
+        """
         self.highlights = list()
         for page_num in range(0,self.pdf.page_count-1):
             page = self.pdf[page_num]
@@ -21,7 +51,6 @@ class Note_extractor():
                 anotacao = {}
                 anotacao["type"] = annot.type[1]
                 anotacao["page"] = page_num + 1
-                anotacao["author"] = annot.info["title"]
                 anotacao["author"] = annot.info["title"]
                 anotacao["rect_coord"] = list(annot.rect)
                 # Adjust by page size
@@ -58,8 +87,22 @@ class Note_extractor():
                 anotacao["text"] = text
                 anotacao['content'] = annot.info['content']
                 anotacao["created"] = annot.info["creationDate"]
-                anotacao["color_name"] = list(annot.colors["stroke"])
+                anotacao["modified"] = annot.info["modDate"]
+                if annot.colors["stroke"]:
+                    anotacao["color_name"] = list(annot.colors["stroke"])
+                elif annot.colors["fill"]:
+                    anotacao["color_name"] = list(annot.colors["fill"])
+                else:
+                    anotacao["color_name"] = list((0,0,0))
                 self.highlights.append(anotacao)
+            self.reorder_columns(columns=1)
+            self.get_metadata()
+            
+    def get_metadata(self):
+        """
+        Get the pdf metadata and assign to to self.metadata
+        """
+        self.metadata = self.pdf.metadata
 
     def adjust_date(self):
         """
@@ -67,15 +110,18 @@ class Note_extractor():
         """
         for annot in self.highlights:
             date_created = re.sub("D:","",annot["created"])
+            date_modified = re.sub("D:","",annot["modified"])
             # Extract Date in format: YYYY-MM-DD HH:MM:SS
             regex_pattern_date = "([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2}).*"
             regex_export_date = r"\1-\2-\3 \4:\5:\6"
             date_created = re.sub(regex_pattern_date,regex_export_date,date_created)
+            date_created = re.sub(regex_pattern_date,regex_export_date,date_modified)
             annot["created"] = date_created
+            annot["modified"] = date_modified
 
     def adjust_color(self):
         """
-        Converts the RGB color to classified group. This method converts RGB to HSL and convert HSL to categorical
+        Convert the RGB color to classified group. This method converts RGB to HSL and convert HSL to categorical
         color names. The default color é Yellow
         """
         for annot in self.highlights:
@@ -95,21 +141,37 @@ class Note_extractor():
             annot["content"] = text
 
     def extract_image(self,location:str, folder = "img/"):
+        """
+        Extract the images from Square annotations and save as png files.
+        
+        Args:
+            location: path location
+        Folder:
+            Folder created inside location to store images.
+        """
+        self.reload()
         for annot in self.highlights:
             if 'annot_number' not in locals():
                 annot_number = 0
             if annot['type'] == 'Square':
                 annot_number = annot_number + 1
-                page = annot['page'] - 1
+                page_number = annot["page"]
+                page = page_number - 1
+
+                pdf_page = self.pdf[page]
+                
+                # print(page)
 
 
                 pdf_page = self.pdf[page]
 
                 # Remove annotations in the page
                 try:
-                    for annots in pdf_page.annots():
-                        pdf_page.delete_annot(annots)
+                    for annotation in pdf_page.annots():
+                        # print(annotation)
+                        pdf_page.delete_annot(annotation)
                 except:
+                    # print("No annotations to exclude at ")
                     pass
                 user_space = annot["rect_coord"]
                 # area = pdf_page.get_pixmap(dpi = 300)
@@ -147,7 +209,7 @@ class Note_extractor():
                 img_folder = re.sub("/+","/",img_folder)
 
                 img = pdf_page.get_pixmap(clip = clip,dpi = 300)
-                print(file_export)
+                # print(file_export)
                 img.save(file_export)
 
                 if os.path.exists(file_export):
@@ -158,17 +220,52 @@ class Note_extractor():
                     annot['img_path'] = ""
             self.reload()
 
-    def reorder_custom(self,criteria = ['page',"start_xy"], ordenation = 'asc'):
-        self.highlights = utils.annots_reorder_custom(self.highlights,criteria=criteria,ordenation=ordenation)
+    def reorder_custom(self,criteria = ['page',"start_xy"], ascending:bool = True):
+        """
+        Reorder the annotations using annotation structure variables.
+        
+        Args:
+            criteria: list of variable names. The position in list define the order to be sorted.
+            ascending: order to be used. If True, use the ascending order. If False, descending order. 
+        """
+        self.highlights = utils.annots_reorder_custom(self.highlights,criteria=criteria,ascending=ascending)
 
     def reorder_columns(self,columns = 1, tolerance = 0.1):
+        """
+        Reorder the annotation using the y position of the element by number of columns.
+        
+        The default number of columns is 1. If the PDF has 2 or more columns, 
+        will divide the page in columns with same width, using a interval 
+        of tolerance defined in a interval from 0 to 1.
+        
+        The tolerance represent a page width percentage to be added to columns interval.
+        If tolerance = 0, the columns limits will correspond to the exact division of 1/columns.
+        If tolerance = 0.1, the columns will correspond to a interval between 1/columns-0.1 to 1/columns + 0.1.
+        
+        
+        Args:
+            columns: number of columns in the file
+            tolerance: page width percentage to be considered in column size.
+        
+        
+        """
         self.highlights = utils.annots_reorder_columns(self.highlights,columns=columns, tolerance=tolerance)
 
     def reload(self):
+        """
+        Close the PDF file and open the PDF file.
+        """
         self.close()
         self.pdf = fitz.open(self.file)
 
     def extract_ink(self,location:str, folder = "img/"):
+        """
+        Extract the ink annotations and save as png files.
+        
+        Args:
+            location: path location
+            folder: folder created inside location to store images.
+        """
         list_pages = dict()
         for annot in self.highlights:
             if annot['type'] == 'Ink':
@@ -190,7 +287,8 @@ class Note_extractor():
                         if annots.type[1] != "Ink":
                             pdf_page.delete_annot(annots)
                 except:
-                    print("No annotations to exclude")
+                    # print("No annotations to exclude")
+                    pass
 
 
                 user_space = annot["rect_coord"]
@@ -268,6 +366,9 @@ class Note_extractor():
         self.reload()
 
     def close(self):
+        """
+        Close the PDF file
+        """
         self.pdf.close()
     
 
