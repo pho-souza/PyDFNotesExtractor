@@ -14,7 +14,7 @@ class Note_extractor():
     def __exit__(self):
         self.close()
 
-    def notes_extract(self, box_flow = 0.5):
+    def notes_extract(self, intersection_level = 0.1):
         """
         Extract annotations from PDF file.
         
@@ -43,6 +43,7 @@ class Note_extractor():
             color_name: color extract from annotation in RGB list.
         """
         self.highlights = list()
+        self.__threshold_intersection = intersection_level
         for page_num in range(0,self.pdf.page_count-1):
             page = self.pdf[page_num]
             page_bound = list(page.bound())
@@ -66,12 +67,10 @@ class Note_extractor():
                 # print(annot.type[1])
                 anotacao["start_xy"] = anotacao["rect_coord"][0:2]
                 text = ''
-                if box_flow < -1:
-                    box_flow = -1
-                if box_flow > 1:
-                    box_flow = 1
-                margin_h = 0
-                margin_w = 0
+                if self.__threshold_intersection < 0:
+                    self.__threshold_intersection = 0
+                if self.__threshold_intersection > 1:
+                    self.__threshold_intersection = 1
                 if annot.vertices and len(annot.vertices) >= 4 and not annot.type[1] in ["Ink","Freetext"]:
                     text = self.__extract_annot(annot, words)
                     anotacao["text"] = text

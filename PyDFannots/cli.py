@@ -83,8 +83,8 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--format","-f",default="",
                    help = "Set the format export. Options are csv or json.")
     
-    g.add_argument("--box-flow","-bf",default=0.5, type=float,
-                   help = "Set the format export. Options are csv or json.")
+    g.add_argument("--intersection-level","-il",default=0.1, type=float,
+                   help = "Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.")
     
     args = p.parse_args()
     
@@ -118,8 +118,8 @@ def main():
 
     extractor = pdf_extract.Note_extractor(input_file)
     
-    if args.box_flow:
-        extractor.notes_extract(box_flow=args.box_flow)
+    if args.intersection_level:
+        extractor.notes_extract(intersection_level=args.intersection_level)
     
     if args.adjust_color:
         extractor.adjust_color()
