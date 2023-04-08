@@ -16,6 +16,7 @@ The basic usage is:
 
 
 ```
+
 Flags
 
 Arguments:
@@ -45,6 +46,7 @@ Negative flags:
     -nac, --no-adjust-color  Disable -ac flag.
     -nink, --no-ink-annotation  Disable -ink flag.
     -nimg, --no-image  Disable -img flag.
+
 ```
 
 ---------------
