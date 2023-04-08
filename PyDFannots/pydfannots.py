@@ -9,11 +9,12 @@ class Note_extractor():
     def __init__(self,file: str):
         self.file = file
         self.pdf = fitz.open(self.file)
+        self.__threshold_intersection = 0.1  # if the intersection is large enough.
         
     def __exit__(self):
         self.close()
 
-    def notes_extract(self):
+    def notes_extract(self, box_flow = 0.5):
         """
         Extract annotations from PDF file.
         
@@ -45,7 +46,11 @@ class Note_extractor():
         for page_num in range(0,self.pdf.page_count-1):
             page = self.pdf[page_num]
             page_bound = list(page.bound())
-            # print(page_bound)
+            annotations = page.annot_xrefs()
+            if not annotations:
+                print("nothing in page ", page_num)
+                next
+            words = page.get_text("words")
             for annot in page.annots():
                 margin = (-2, -2, 2, 2)
                 anotacao = {}
@@ -61,30 +66,15 @@ class Note_extractor():
                 # print(annot.type[1])
                 anotacao["start_xy"] = anotacao["rect_coord"][0:2]
                 text = ''
-                margin_h = 3
-                margin_w = 3
+                if box_flow < -1:
+                    box_flow = -1
+                if box_flow > 1:
+                    box_flow = 1
+                margin_h = 0
+                margin_w = 0
                 if annot.vertices and len(annot.vertices) >= 4 and not annot.type[1] in ["Ink","Freetext"]:
-                    vertices = annot.vertices
-                    for i in range(0,len(vertices),4):
-                        range_interval = slice(i,i+4)
-                        rect = vertices[range_interval]
-                        clip = fitz.Rect(rect[0],rect[3])
-                        subtext = page.get_text(clip = clip)
-                        text = text + subtext
-                        while(subtext == ''):
-                            margin_w = margin_w +1
-                            x0 = rect[0][0] - margin_w
-                            y0  = rect[0][1] - margin_w
-                            x1 = rect[3][0] + margin_w
-                            y1  = rect[3][1] + margin_w
-                            clip = fitz.Rect(x0,y0,x1,y1)
-                            # print(clip)
-                            subtext = page.get_text(clip = clip)
-                            text = text + subtext
-                            if margin_w >= 50:
-                                break
-
-                anotacao["text"] = text
+                    text = self.__extract_annot(annot, words)
+                    anotacao["text"] = text
                 anotacao['content'] = annot.info['content']
                 anotacao["created"] = annot.info["creationDate"]
                 anotacao["modified"] = annot.info["modDate"]
@@ -97,6 +87,55 @@ class Note_extractor():
                 self.highlights.append(anotacao)
             self.reorder_columns(columns=1)
             self.get_metadata()
+            
+    def __check_contain(self,r_word, points):
+        """If `r_word` is contained in the rectangular area.
+
+        The area of the intersection should be large enough compared to the
+        area of the given word.
+
+        Args:
+            r_word (fitz.Rect): rectangular area of a single word.
+            points (list): list of points in the rectangular area of the
+                given part of a highlight.
+
+        Returns:
+            bool: whether `r_word` is contained in the rectangular area.
+        """
+        # `r` is mutable, so everytime a new `r` should be initiated.
+        r = fitz.Quad(points).rect
+        r.intersect(r_word)
+
+        if r.get_area() >= r_word.get_area() * self.__threshold_intersection:
+            contain = True
+        else:
+            contain = False
+        return contain
+    
+    
+    def __extract_annot(self, annot, words_on_page):
+        """Extract words in a given highlight.
+
+        Args:
+            annot (fitz.Annot): [description]
+            words_on_page (list): [description]
+
+        Returns:
+            str: words in the entire highlight.
+        """
+        quad_points = annot.vertices
+        quad_count = int(len(quad_points) / 4)
+        sentences = ['' for i in range(quad_count)]
+        for i in range(quad_count):
+            points = quad_points[i * 4: i * 4 + 4]
+            words = [
+                w for w in words_on_page if
+                self.__check_contain(fitz.Rect(w[:4]), points)
+            ]
+            sentences[i] = ' '.join(w[4] for w in words)
+        sentence = ' '.join(sentences)
+
+        return sentence
             
     def get_metadata(self):
         """

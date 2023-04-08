@@ -1,1 +1,4 @@
 include LICENSE
+recursive-include templates .*css
+recursive-include templates .*md
+recursive-include templates .*css

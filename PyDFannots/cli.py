@@ -38,13 +38,22 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     
     g = p.add_argument_group('Basic options')
     
-    g.add_argument("--adjust-color", "-ac", default=False,action="store_true",
+    g.add_argument("--adjust-color", "-ac",dest = 'adjust_color', default=True,action="store_true",
                    help = "Extract colors from annotations.")
     
-    g.add_argument("--adjust-date", "-ad", default=False,action="store_true",
+    g.add_argument("--not-adjust-color", "-nac", dest = 'adjust_color',action="store_false",
+                   help = "Extract colors from annotations.")
+    
+    g.add_argument("--adjust-date", "-ad", default=True,action="store_true",
                    help = "Adjust date to the format YYYY-MM-DD HH:mm:SS")
     
-    g.add_argument("--adjust-text", "-at", default=False,action="store_true",
+    g.add_argument("--no-adjust-date", "-nad",dest = "adjust_date",action="store_false",
+                   help = "Adjust date to the format YYYY-MM-DD HH:mm:SS")
+    
+    g.add_argument("--adjust-text", "-at", dest = "adjust_text",default=True,action="store_true",
+                   help = "Adjust text to eliminate hyphens and linebreaks")
+    
+    g.add_argument("--no-adjust-text", "-nat", dest = "adjust_text",action="store_false",
                    help = "Adjust text to eliminate hyphens and linebreaks")
     
     g.add_argument("--columns", "-c", default=1,
@@ -53,10 +62,16 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--tolerance", "-tol", default=0.1,
                    help = "Tolerance interval for columns. Default is 0.1")
     
-    g.add_argument("--image", "-img", default=False,action="store_true",
+    g.add_argument("--image", "-img", dest = 'image', default=True,action="store_true",
                    help = "Extract rectangle annotations as image")
     
-    g.add_argument("--ink-annotation", "-ink", default=False,action="store_true",
+    g.add_argument("--no-image", "-nimg", dest = 'image', action="store_false",
+                   help = "Extract rectangle annotations as image")
+    
+    g.add_argument("--ink-annotation", "-ink", dest = 'ink_annotation',default=True,action="store_true",
+                   help = "Extract ink annotations as image")
+    
+    g.add_argument("--no-ink-annotation", "-nink", dest = 'ink_annotation',action="store_false",
                    help = "Extract ink annotations as image")
     
     g.add_argument("--template", "-temp", default="",
@@ -68,6 +83,9 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--format","-f",default="",
                    help = "Set the format export. Options are csv or json.")
     
+    g.add_argument("--box-flow","-bf",default=0.5, type=float,
+                   help = "Set the format export. Options are csv or json.")
+    
     args = p.parse_args()
     
     return args
@@ -76,7 +94,7 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
 
 def main():
     args = parse_args()
-    print(args)
+    # print(args)
     
     input_file = args.input[0]
     export_file = args.output[0]
@@ -88,11 +106,11 @@ def main():
     export_file = os.path.abspath(export_file)
     
     export_folder = os.path.dirname(export_file)
-    print(export_folder)
+    # print(export_folder)
     
     file_title = os.path.basename(input_file)
     file_title = re.sub("[.].*$","",file_title)
-    print(file_title)
+    # print(file_title)
     
     extension = re.sub(".*[.](.*)$","\\1",file_title)
 
@@ -100,7 +118,8 @@ def main():
 
     extractor = pdf_extract.Note_extractor(input_file)
     
-    extractor.notes_extract()
+    if args.box_flow:
+        extractor.notes_extract(box_flow=args.box_flow)
     
     if args.adjust_color:
         extractor.adjust_color()

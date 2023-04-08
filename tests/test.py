@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from PyDFannots.pydfannot import Note_extractor
+import PyDFannots.pydfannots as  pydfannots
 import PyDFannots.utils as utils
 import json
 import re
+from importlib import reload
 
 # if __name__ == '__main__':
 #     import pdfannot.cli
@@ -17,24 +18,18 @@ file_title = re.sub("[.].pdf","",file_title)
 
 html_export = export_folder + "/" + file_title + ".html"
 
+reload(pydfannots)
 
-
-extractor = Note_extractor(file)
-
-pdf = extractor.pdf[0]
-
-for annot in pdf.annots():
-    print(annot)
-    print(annot.colors)
+extractor = pydfannots.Note_extractor(file)
 
 extractor.get_metadata()
 extractor.metadata
-extractor.notes_extract()
+extractor.notes_extract(box_flow=0)
 extractor.adjust_color()
 extractor.adjust_date()
 extractor.adjust_text()
 
-extractor.reorder_custom(criteria=["page"],ordenation='asc')
+# extractor.reorder_custom(criteria=["page"],ordenation='asc')
 extractor.reorder_columns(columns=1,tolerance=0)
 extractor.extract_image(location=export_folder)
 extractor.extract_ink(location=export_folder)
