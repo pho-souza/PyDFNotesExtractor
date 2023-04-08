@@ -56,6 +56,8 @@ Negative flags:
 For export json file
 ``pydfannots -i tests/PDF_WIKI.pdf -o tests/output/PDF_WIKI.json -f json``
 
+The file is stored (here)[tests/PDF_WIKI.pdf]
+
 The result are:
 
 ```json
