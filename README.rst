@@ -4,11 +4,12 @@
 This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
 
 
-===
+=========
+
 # Installation
 
 To install, use the command:
-`python setup.py install`
+``python setup.py install``
 
 # Usage
 
@@ -19,3 +20,4 @@ The basic usage is:
 By default extract images and ink annotations.
 
 ---------------
+
