@@ -25,6 +25,10 @@ def file_path(string,dir = False):
         raise FileNotFoundError(string)
 
 def parse_args() -> typ.Tuple[argparse.Namespace]:
+    import PyDFannots.cfg as cfg
+    
+    config = cfg.config_file().config
+    
     p = argparse.ArgumentParser(prog = 'pypdfannot', description=__doc__)
     
     p.add_argument('--version', '-v', action='version',
@@ -59,8 +63,8 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--columns", "-c", default=1,
                    help = "Reorder the annotations using same size columns")
     
-    g.add_argument("--tolerance", "-tol", default=0.1,
-                   help = "Tolerance interval for columns. Default is 0.1")
+    g.add_argument("--tolerance", "-tol", default=config["TOLERANCE"],
+                   help = "Tolerance interval for columns. Default is {}".format(config["TOLERANCE"]))
     
     g.add_argument("--image", "-img", dest = 'image', default=True,action="store_true",
                    help = "Extract rectangle annotations as image")
@@ -83,8 +87,21 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--format","-f",default="",
                    help = "Set the format export. Options are csv or json.")
     
-    g.add_argument("--intersection-level","-il",default=0.1, type=float,
+    g.add_argument("--intersection-level","-il",default=config["INTERSECTION_LEVEL"], type=float,
                    help = "Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.")
+    
+    g.add_argument("--import-template","-it", type=pathlib.Path,
+                   help = "Add template file to PyDFannots.")
+    
+    g.add_argument("--delete-template","-dt", type=pathlib.Path, nargs="+",
+                   help = "Delete template from template folder. Give just the name.")
+    
+    g.add_argument("--rename-template","-rt", type=pathlib.Path, nargs=2,
+                   metavar=('name','new_name'),
+                   help = "Change name.")
+    
+    g.add_argument("--config","-cfg", default =  "",type=pathlib.Path,
+                   help = "Set user config file.")
     
     args = p.parse_args()
     
@@ -118,7 +135,19 @@ def main():
 
     extractor = pdf_extract.Note_extractor(input_file)
     
-    if args.intersection_level:
+    if args.config:
+        path = os.path.abspath(args.config)
+        print(path)
+        if os.path.exists(path):
+            extractor.add_config(path)
+    else:
+        extractor.add_config()
+        
+    print(extractor.config)
+    
+    if args.intersection_level != extractor.config["INTERSECTION_LEVEL"]:
+        extractor.notes_extract(intersection_level=args.intersection_level)
+    else:
         extractor.notes_extract(intersection_level=args.intersection_level)
     
     if args.adjust_color:
@@ -167,7 +196,7 @@ def main():
                 f.write(md_print)
                 return 0
         else:
-            template_options = os.listdir("pypdfannot/templates/")
+            template_options = extractor.templates
             if args.template in template_options:
                 md_print = utils.md_export(annotations=highlight,title = file_title,template=args.template)
                 with open(export_file, "w", encoding="utf-8") as f:

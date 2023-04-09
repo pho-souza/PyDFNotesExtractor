@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 import PyDFannots.utils as utils
+import PyDFannots.cfg as cfg
 import fitz
 import re
 import os
-
+import shutil
 
 class Note_extractor():
     def __init__(self,file: str):
         self.file = file
         self.pdf = fitz.open(self.file)
-        self.__threshold_intersection = 0.1  # if the intersection is large enough.
+        self.add_config()
+        self.__threshold_intersection = self.config["INTERSECTION_LEVEL"]  # if the intersection is large enough.
+        self.__path_template = os.path.abspath("PyDFannots//templates")
+        
         
     def __exit__(self):
         self.close()
 
-    def notes_extract(self, intersection_level = 0.1):
+    def notes_extract(self, intersection_level:float):
         """
         Extract annotations from PDF file.
         
@@ -86,7 +90,18 @@ class Note_extractor():
                 self.highlights.append(anotacao)
             self.reorder_columns(columns=1)
             self.get_metadata()
-            
+    
+    def add_config(self, config=""):
+        """Add configuration file
+
+        Args:
+            config (_type_): _description_
+        """
+        if config == "":
+            self.config = cfg.config_file().config
+        else:
+            self.config = cfg.config_file(config).config
+    
     def __check_contain(self,r_word, points):
         """If `r_word` is contained in the rectangular area.
 
@@ -135,6 +150,66 @@ class Note_extractor():
         sentence = ' '.join(sentences)
 
         return sentence
+    
+    def import_template(self, path:str):
+        """
+        Import a template file to template folder
+
+        Args:
+            path (str): path of the file
+        """
+        full_path = os.path.abspath(path)
+        
+        file_name = os.path.basename(full_path)
+        
+        move_path = self.__path_template + "//" + file_name
+        
+        move_path = os.path.abspath(move_path)
+        
+        print("full_path: ", full_path)
+        print("move_path: ", move_path)
+        # if os.path.exists(move_path):
+        shutil.copy(src=full_path,dst=move_path)
+        
+    def rename_template(self,name:str, new_name:str):
+        """
+        Rename a template from templates folder.
+
+        Args:
+            name (str): actual template name
+            new_name (str): New template name
+        """
+        try:
+            if name:
+                actual_file = self.__path_template + "//" + name
+                actual_file = os.path.abspath(actual_file)
+            if new_name:
+                new_file = self.__path_template + "//" + new_name
+                new_file = os.path.abspath(new_file)
+            if os.path.exists(actual_file):
+                shutil.move(actual_file,new_file)
+        except:
+            print("Error. Use a exist name of template and a valid name for template")
+    
+    def remove_template(self,name:str):
+        """Remove template from template folder
+
+        Args:
+            name (str): Template to be removed
+        """
+        try:
+            file = self.__path_template + "//" + name
+            file = os.path.abspath(file)
+            if os.path.exists(file):
+                os.remove(file)
+        except:
+            print("Error")
+        
+    @property
+    def templates(self):
+        path_template = self.__path_template
+        files = os.listdir(path_template)
+        return files
             
     def get_metadata(self):
         """

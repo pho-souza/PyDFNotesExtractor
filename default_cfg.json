@@ -1,0 +1,13 @@
+{
+    "config": {
+        "DEFAULT_TEMPLATE": "template_default.md",
+        "IMG_FOLDER": "img/",
+        "TEMPLATE_FOLDER": "PyDFannots/templates/",
+        "DEFAULT_COLOR": [
+            1,
+            1,
+            0
+        ],
+        "INTERSECTION_LEVEL": 0.5
+    }
+}

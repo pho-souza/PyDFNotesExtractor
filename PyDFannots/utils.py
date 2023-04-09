@@ -1,6 +1,8 @@
 import colorsys
 import operator
 import pathlib
+import PyDFannots.cfg as cfg
+import os
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -17,12 +19,17 @@ CHARACTER_SUBSTITUTIONS = {
     '…': '...',
 }
 
-DEFAULT_COLOR = (1,1,0)
 
+config_file = os.path.abspath("default_cfg.json")
+print(config_file)
+if os.path.exists(config_file):
+    CONF = cfg.config_file(config_file)
+else:
+    CONF = cfg.config_file()
 
-DEFAULT_COLOR = (1,1,0)
+DEFAULT_COLOR = CONF.get_cfg("DEFAULT_COLOR")
 
-PATH = pathlib.Path(__file__).resolve().parent / 'templates'
+PATH = CONF.get_cfg("TEMPLATE_FOLDER")
 # PATH = "pypdfannot/templates/"
 TEMPLATE_ENVIRONMENT = Environment(
     autoescape=False,
@@ -31,7 +38,8 @@ TEMPLATE_ENVIRONMENT = Environment(
     lstrip_blocks=False
 )
 
-DEFAULT_TEMPLATE = "template_html.html"
+
+DEFAULT_TEMPLATE = CONF.get_cfg("DEFAULT_TEMPLATE")
 
 
 

@@ -21,6 +21,7 @@ with open('LICENSE') as f:
 
 def main() -> None:
     extra_files = package_files('PyDFannots/templates')
+    config_files = package_files('default_cfg.json')
     setup(
         name='PyDFannots',
         version='0.1.1',

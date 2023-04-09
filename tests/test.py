@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import PyDFannots.pydfannots as  pydfannots
 import PyDFannots.utils as utils
+import PyDFannots.cfg as cfg
 import json
 import re
 from importlib import reload
@@ -18,12 +19,33 @@ file_title = re.sub("[.].pdf","",file_title)
 
 html_export = export_folder + "/" + file_title + ".html"
 
+
+reload(cfg)
+
+config = cfg.config_file()
+# config = cfg.config_file(cfg_file="default_cfg.json")
+config.config
+
+config.save("default_cfg.json")
+
 reload(pydfannots)
 
 extractor = pydfannots.Note_extractor(file)
 
 extractor.get_metadata()
 extractor.metadata
+
+extractor.import_template("tests/temp.txt")
+
+extractor.templates
+
+extractor.rename_template("temp.txt","templ2.txt")
+
+extractor.templates
+
+extractor.remove_template("templ2.txt")
+extractor.templates
+
 extractor.notes_extract(intersection_level=0)
 extractor.adjust_color()
 extractor.adjust_date()
