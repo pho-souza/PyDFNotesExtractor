@@ -1,14 +1,14 @@
 # PyDFNotesExtractor
-========================
+
 
 This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
 
 -----------
-
+git 
 To install, use the command:
 ``python setup.py install``
 
-# Usage
+## Usage
 
 The basic usage is:
 
@@ -49,13 +49,13 @@ Negative flags:
 
 ```
 
----------------
+---------------git ad
 
-# Sample output
+## Sample output
 
 Examples of usage:
 
-## Json 
+### Json 
 
 For export json file
 ``pydfannots -i tests/PDF_WIKI.pdf -o tests/output/PDF_WIKI.json -f json``
