@@ -24,7 +24,7 @@ class Note_extractor():
         
         The method will extract annotations from all the pages in PDF file and assign to highlight variable.
         The informations collected are: type, page, author, rect_coord, start_xy,
-        text, conent, created, modified, color_name.
+        text, conent, created, modified, color.
         
         Description of the variables:
             type: the type of annotation. The types are defined in PDF reference. The most common types are:
@@ -44,7 +44,7 @@ class Note_extractor():
             content: text extract from the annotation positions in the PDF file.
             created: date where annotation was created.
             modified: date where annotation was modified.
-            color_name: color extract from annotation in RGB list.
+            color: color extract from annotation in RGB list.
         """
         self.highlights = list()
         self.__threshold_intersection = intersection_level
@@ -81,12 +81,14 @@ class Note_extractor():
                 anotacao['content'] = annot.info['content']
                 anotacao["created"] = annot.info["creationDate"]
                 anotacao["modified"] = annot.info["modDate"]
+                anotacao["has_img"] = False
+                anotacao["img_path"] = ""
                 if annot.colors["stroke"]:
-                    anotacao["color_name"] = list(annot.colors["stroke"])
+                    anotacao["color"] = list(annot.colors["stroke"])
                 elif annot.colors["fill"]:
-                    anotacao["color_name"] = list(annot.colors["fill"])
+                    anotacao["color"] = list(annot.colors["fill"])
                 else:
-                    anotacao["color_name"] = list((0,0,0))
+                    anotacao["color"] = list((0,0,0))
                 self.highlights.append(anotacao)
             self.reorder_columns(columns=1)
             self.get_metadata()
@@ -228,7 +230,7 @@ class Note_extractor():
             regex_pattern_date = "([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2}).*"
             regex_export_date = r"\1-\2-\3 \4:\5:\6"
             date_created = re.sub(regex_pattern_date,regex_export_date,date_created)
-            date_created = re.sub(regex_pattern_date,regex_export_date,date_modified)
+            date_modified = re.sub(regex_pattern_date,regex_export_date,date_modified)
             annot["created"] = date_created
             annot["modified"] = date_modified
 
@@ -238,10 +240,10 @@ class Note_extractor():
         color names. The default color é Yellow
         """
         for annot in self.highlights:
-            color = annot["color_name"]
+            color = annot["color"]
             color_hls = utils.convert_to_hls(color)
-            color_names = utils.colors_names(color_hls)
-            annot["color_name"] = color_names
+            colors = utils.colors_names(color_hls)
+            annot["color_name"] = colors
 
     def adjust_text(self):
         """

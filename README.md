@@ -84,10 +84,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Cyan",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            0.00392200006172061,
+            1.0,
+            1.0
+        ],
         "index": 1,
         "y": 0.06354998069789362,
-        "column": 1
+        "column": 1,
+        "color_name": "Cyan"
     },
     {
         "type": "Highlight",
@@ -107,10 +114,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.0
+        ],
         "index": 2,
         "y": 0.12793119668196828,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "Square",
@@ -129,12 +143,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Orange",
+        "has_img": true,
+        "img_path": "img/PDF_WIKI_p1_1.png",
+        "color": [
+            0.9137259721755981,
+            0.5607839822769165,
+            0.0
+        ],
         "index": 3,
         "y": 0.1314687912265449,
         "column": 1,
-        "has_img": true,
-        "img_path": "img/PDF_WIKI_p1_1.png"
+        "color_name": "Orange"
     },
     {
         "type": "Highlight",
@@ -154,10 +173,17 @@ The result are:
         "content": "Remember the year",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.0
+        ],
         "index": 4,
         "y": 0.2971247010423428,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "FreeText",
@@ -176,10 +202,17 @@ The result are:
         "content": "Test",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.749019980430603
+        ],
         "index": 5,
         "y": 0.4678581643918196,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "Highlight",
@@ -199,10 +232,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Cyan",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            0.00392200006172061,
+            1.0,
+            1.0
+        ],
         "index": 6,
         "y": 0.48915645476735176,
-        "column": 1
+        "column": 1,
+        "color_name": "Cyan"
     },
     {
         "type": "Text",
@@ -221,10 +261,17 @@ The result are:
         "content": "Necess\u00e1rio avaliar",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.0
+        ],
         "index": 7,
         "y": 0.605952742027693,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "FreeText",
@@ -243,10 +290,17 @@ The result are:
         "content": "Avalia\u00e7\u00e3o escrita",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Black",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            0,
+            0,
+            0
+        ],
         "index": 8,
         "y": 0.9321430258865959,
-        "column": 1
+        "column": 1,
+        "color_name": "Black"
     },
     {
         "type": "Highlight",
@@ -266,10 +320,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.0
+        ],
         "index": 9,
         "y": 0.18543332920364786,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "Highlight",
@@ -289,10 +350,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.0
+        ],
         "index": 10,
         "y": 0.2050621089454576,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "Highlight",
@@ -312,10 +380,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.0
+        ],
         "index": 11,
         "y": 0.22469081610931518,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "Highlight",
@@ -335,10 +410,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Yellow",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            1.0,
+            0.0
+        ],
         "index": 12,
         "y": 0.2444908072402894,
-        "column": 1
+        "column": 1,
+        "color_name": "Yellow"
     },
     {
         "type": "Highlight",
@@ -358,10 +440,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Red",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            0.0,
+            0.0
+        ],
         "index": 13,
         "y": 0.27693111967676104,
-        "column": 1
+        "column": 1,
+        "color_name": "Red"
     },
     {
         "type": "Highlight",
@@ -381,10 +470,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Orange",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            0.9960780143737793,
+            0.450980007648468,
+            0.1254899948835373
+        ],
         "index": 14,
         "y": 0.37458264955830145,
-        "column": 1
+        "column": 1,
+        "color_name": "Orange"
     },
     {
         "type": "Highlight",
@@ -404,10 +500,17 @@ The result are:
         "content": "H2",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Cyan",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            0.00392200006172061,
+            1.0,
+            1.0
+        ],
         "index": 15,
         "y": 0.49327674140090977,
-        "column": 1
+        "column": 1,
+        "color_name": "Cyan"
     },
     {
         "type": "Square",
@@ -426,12 +529,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Red",
+        "has_img": true,
+        "img_path": "img/PDF_WIKI_p2_2.png",
+        "color": [
+            1.0,
+            0.0,
+            0.0
+        ],
         "index": 16,
         "y": 0.7194860697144616,
         "column": 1,
-        "has_img": true,
-        "img_path": "img/PDF_WIKI_p2_2.png"
+        "color_name": "Red"
     },
     {
         "type": "Highlight",
@@ -451,10 +559,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Green",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            0.0,
+            1.0,
+            0.0
+        ],
         "index": 17,
         "y": 0.478570924154661,
-        "column": 1
+        "column": 1,
+        "color_name": "Green"
     },
     {
         "type": "Underline",
@@ -474,10 +589,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Green",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            0.0,
+            1.0,
+            0.0
+        ],
         "index": 18,
         "y": 0.61329552602649,
-        "column": 1
+        "column": 1,
+        "color_name": "Green"
     },
     {
         "type": "Squiggly",
@@ -497,10 +619,17 @@ The result are:
         "content": "",
         "created": "2023-04-08 11:16:57",
         "modified": "20230408111657-03'00'",
-        "color_name": "Red",
+        "has_img": false,
+        "img_path": "",
+        "color": [
+            1.0,
+            0.0,
+            0.0
+        ],
         "index": 19,
         "y": 0.7828160666393338,
-        "column": 1
+        "column": 1,
+        "color_name": "Red"
     }
 ]
 ```
