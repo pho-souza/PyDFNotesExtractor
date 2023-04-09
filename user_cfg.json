@@ -1,8 +1,0 @@
-{
-    "config": {
-        "DEFAULT_TEMPLATE": "template_html.html",
-        "IMG_FOLDER": "img/",
-        "TEMPLATE_FOLDER": "PyDFannots/templates/",
-        "AAAA": "123"
-    }
-}

@@ -50,7 +50,7 @@ class config_file:
         default = self.__default["config"]
         
         # Default values
-        default.setdefault("DEFAULT_TEMPLATE","template_default.md")
+        default.setdefault("DEFAULT_TEMPLATE","template_html.html")
         default.setdefault("IMG_FOLDER","img/")
         default.setdefault("TEMPLATE_FOLDER","PyDFannots/templates/")
         default.setdefault("DEFAULT_COLOR",[1,1,0])

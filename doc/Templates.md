@@ -31,3 +31,28 @@ You can access all the fields this way:
 {% endfor %}
 ```
 
+
+### Include content from other files
+
+You can split into multiple files for organizing your templates. To include another files in your file, you can use include. If you want to include a CSS in your template, you can use:
+
+```jinja2
+{% include 'stylesheet.css' %}
+```
+
+
+# How can I use my templates?
+
+To use custom templates, you need import them first. To import a template, you execute:
+
+```
+PyDFannot --import-template <template1> <template2> ... <templaten>
+```
+
+To delete an unused template, you execute:
+
+```
+PyDFannot --delete-template <template1> <template2> ... <templaten>
+```
+
+If you want to add a custom

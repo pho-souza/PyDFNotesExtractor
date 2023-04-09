@@ -5,18 +5,23 @@ import fitz
 import re
 import os
 import shutil
+from importlib import reload
 
 class Note_extractor():
-    def __init__(self,file: str):
-        self.file = file
-        self.pdf = fitz.open(self.file)
+    def __init__(self,file: str = ""):
+        if file != "":
+            self.file = file
+            self.pdf = fitz.open(self.file)
         self.add_config()
         self.__threshold_intersection = self.config["INTERSECTION_LEVEL"]  # if the intersection is large enough.
         self.__path_template = os.path.abspath("PyDFannots//templates")
         
-        
     def __exit__(self):
         self.close()
+        
+    def add_pdf(self, file: str = ""):
+        self.file = file
+        self.pdf = fitz.open(self.file)
 
     def notes_extract(self, intersection_level:float):
         """
@@ -103,6 +108,15 @@ class Note_extractor():
             self.config = cfg.config_file().config
         else:
             self.config = cfg.config_file(config).config
+                         
+        utils.DEFAULT_COLOR = self.config["DEFAULT_COLOR"]
+        utils.PATH = self.config["TEMPLATE_FOLDER"]
+        utils.DEFAULT_TEMPLATE = self.config["DEFAULT_TEMPLATE"]
+        utils.DEFAULT_COLOR = self.config["DEFAULT_COLOR"]
+        
+        reload(utils)
+        
+    
     
     def __check_contain(self,r_word, points):
         """If `r_word` is contained in the rectangular area.
@@ -168,10 +182,9 @@ class Note_extractor():
         
         move_path = os.path.abspath(move_path)
         
-        print("full_path: ", full_path)
-        print("move_path: ", move_path)
         # if os.path.exists(move_path):
         shutil.copy(src=full_path,dst=move_path)
+        print("File {} imported into {}".format(full_path,move_path))
         
     def rename_template(self,name:str, new_name:str):
         """
@@ -190,6 +203,7 @@ class Note_extractor():
                 new_file = os.path.abspath(new_file)
             if os.path.exists(actual_file):
                 shutil.move(actual_file,new_file)
+                print("File {} renamed to {}".format(actual_file,new_file))
         except:
             print("Error. Use a exist name of template and a valid name for template")
     
@@ -204,6 +218,7 @@ class Note_extractor():
             file = os.path.abspath(file)
             if os.path.exists(file):
                 os.remove(file)
+                print("File {} removed from templates folder".format(file))
         except:
             print("Error")
         

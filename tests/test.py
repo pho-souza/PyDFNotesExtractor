@@ -32,6 +32,8 @@ reload(pydfannots)
 
 extractor = pydfannots.Note_extractor(file)
 
+extractor.add_config("tests/user_cfg.json")
+
 extractor.get_metadata()
 extractor.metadata
 

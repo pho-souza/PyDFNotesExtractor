@@ -1,4 +1,4 @@
 PyMuPDF2=1.21.1
-jinja2
+Jinja2=3.1.2
 colorsys
-pathlib
+pathlib=1.0.1

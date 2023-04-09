@@ -1,6 +1,5 @@
 import colorsys
 import operator
-import pathlib
 import PyDFannots.cfg as cfg
 import os
 
@@ -21,16 +20,20 @@ CHARACTER_SUBSTITUTIONS = {
 
 
 config_file = os.path.abspath("default_cfg.json")
-print(config_file)
 if os.path.exists(config_file):
     CONF = cfg.config_file(config_file)
 else:
     CONF = cfg.config_file()
 
-DEFAULT_COLOR = CONF.get_cfg("DEFAULT_COLOR")
+if not "DEFAULT_COLOR" in globals() or not "DEFAULT_COLOR" in locals() :
+    print("Assign globals")
+    DEFAULT_COLOR = CONF.get_cfg("DEFAULT_COLOR")
+    PATH = CONF.get_cfg("TEMPLATE_FOLDER")
+    DEFAULT_TEMPLATE = CONF.get_cfg("DEFAULT_TEMPLATE")
+    # CONF.save(config_file)
 
-PATH = CONF.get_cfg("TEMPLATE_FOLDER")
-# PATH = "pypdfannot/templates/"
+print(DEFAULT_TEMPLATE)
+
 TEMPLATE_ENVIRONMENT = Environment(
     autoescape=False,
     loader=FileSystemLoader(PATH),
@@ -39,7 +42,7 @@ TEMPLATE_ENVIRONMENT = Environment(
 )
 
 
-DEFAULT_TEMPLATE = CONF.get_cfg("DEFAULT_TEMPLATE")
+
 
 
 
