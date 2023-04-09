@@ -28,7 +28,7 @@ def main() -> None:
         long_description=readme,
         author='Pedro Souza',
         author_email='pho.souza.mail@gmail.com',
-        url='https://github.com/pho-souza/PyDFNotesExtractor',
+        url='https://github.com/pho-souza/PyDFannots',
         license=license,
         packages=['PyDFannots'],
         package_dir={'PyDFannots': 'PyDFannots'},

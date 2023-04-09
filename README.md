@@ -53,6 +53,10 @@ Negative flags:
 
 # Sample output
 
+Examples of usage:
+
+## Json 
+
 For export json file
 ``pydfannots -i tests/PDF_WIKI.pdf -o tests/output/PDF_WIKI.json -f json``
 
@@ -500,3 +504,4 @@ The result are:
     }
 ]
 ```
+
