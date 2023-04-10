@@ -1,4 +1,6 @@
 import json
+import pathlib
+import os
 
 class config_file:
     def __init__(self,cfg_file:str = ""):
@@ -50,9 +52,10 @@ class config_file:
         default = self.__default["config"]
         
         # Default values
+        project_folder = os.path.abspath(pathlib.Path(__file__).parent)
         default.setdefault("DEFAULT_TEMPLATE","template_html.html")
         default.setdefault("IMG_FOLDER","img/")
-        default.setdefault("TEMPLATE_FOLDER","PyDFannots/templates/")
+        default.setdefault("TEMPLATE_FOLDER",os.path.abspath(project_folder + "//templates/"))
         default.setdefault("DEFAULT_COLOR",[1,1,0])
         default.setdefault("INTERSECTION_LEVEL",0.1)
         default.setdefault("TOLERANCE",0.1)

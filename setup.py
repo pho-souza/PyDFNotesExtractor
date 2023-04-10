@@ -20,8 +20,8 @@ with open('LICENSE') as f:
     license = f.read()
 
 def main() -> None:
-    extra_files = package_files('PyDFannots/templates')
-    config_files = package_files('default_cfg.json')
+    extra_files = package_files('./PyDFannots/templates')
+    config_files = package_files('./default_cfg.json')
     setup(
         name='PyDFannots',
         version='0.1.1',
@@ -38,7 +38,8 @@ def main() -> None:
                 'pydfannots=PyDFannots.cli:main'
                 ],
             },
-        package_data={'PyDFannots': extra_files},
+        package_data={'PyDFannots': extra_files,
+                      '': config_files},
         # data_files=[('PyDFannots/templates',['template_html.html'])],
         install_requires=['PyMuPDF','jinja2']
     )

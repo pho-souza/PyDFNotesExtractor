@@ -112,7 +112,7 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
 
 def main():
     args = parse_args()
-    print(args)
+    # print(args)
     
     extractor = pdf_extract.Note_extractor()
     
@@ -146,9 +146,11 @@ def main():
 
 
         extractor.add_pdf(input_file)
+        
+        print("\n\nTEMPLATES:", extractor.templates)
 
             
-        print(extractor.config)
+        # print(extractor.config)
         
         if args.intersection_level != extractor.config["INTERSECTION_LEVEL"]:
             extractor.notes_extract(intersection_level=args.intersection_level)
@@ -187,7 +189,7 @@ def main():
                 names = list(annot.keys())
                 names_fields.append(names)
             names_fields = list(chain(*names_fields))
-            print(names_fields)
+            # print(names_fields)
             names_fields = list(set(names_fields))
             with open(export_file,'w') as csvfile:
                 writer = csv.DictWriter(csvfile,fieldnames=names_fields,doublequote=True,lineterminator="\n")

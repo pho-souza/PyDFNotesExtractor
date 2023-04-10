@@ -2,6 +2,7 @@ import colorsys
 import operator
 import PyDFannots.cfg as cfg
 import os
+import pathlib
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -19,27 +20,33 @@ CHARACTER_SUBSTITUTIONS = {
 }
 
 
-config_file = os.path.abspath("default_cfg.json")
+
+
+config_file = os.path.abspath(pathlib.Path(__file__).parent) + ("//default_cfg.json")
+config_file = os.path.abspath(config_file)
+print("config_file: ", config_file)
 if os.path.exists(config_file):
     CONF = cfg.config_file(config_file)
 else:
     CONF = cfg.config_file()
 
 if not "DEFAULT_COLOR" in globals() or not "DEFAULT_COLOR" in locals() :
-    print("Assign globals")
+    # print("Assign globals")
     DEFAULT_COLOR = CONF.get_cfg("DEFAULT_COLOR")
     PATH = CONF.get_cfg("TEMPLATE_FOLDER")
     DEFAULT_TEMPLATE = CONF.get_cfg("DEFAULT_TEMPLATE")
-    # CONF.save(config_file)
 
-print(DEFAULT_TEMPLATE)
+
+
 
 TEMPLATE_ENVIRONMENT = Environment(
     autoescape=False,
-    loader=FileSystemLoader(PATH),
+    loader=FileSystemLoader(os.path.abspath(PATH)),
     trim_blocks=True,
     lstrip_blocks=False
 )
+
+
 
 
 
@@ -239,7 +246,7 @@ def md_export(annotations,title = "Title",template = DEFAULT_TEMPLATE):
     """
     Export the annotation using some jinja template.
     """
-    print(PATH)
+    # print(PATH)
 
     md_template = TEMPLATE_ENVIRONMENT.get_template(template)
     retorno = md_template.render(title = title,

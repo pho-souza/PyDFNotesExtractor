@@ -14,7 +14,7 @@ class Note_extractor():
             self.pdf = fitz.open(self.file)
         self.add_config()
         self.__threshold_intersection = self.config["INTERSECTION_LEVEL"]  # if the intersection is large enough.
-        self.__path_template = os.path.abspath("PyDFannots//templates")
+        self.__path_template = os.path.abspath(self.config["TEMPLATE_FOLDER"])
         
     def __exit__(self):
         self.close()
