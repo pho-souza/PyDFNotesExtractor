@@ -134,12 +134,19 @@ def main():
         input_file = os.path.abspath(input_file)
         export_file = os.path.abspath(export_file)
         
+        
         export_folder = os.path.dirname(export_file)
+        
+        
         # print(export_folder)
         
         file_title = os.path.basename(input_file)
         file_title = re.sub("[.].*$","",file_title)
-        # print(file_title)
+        
+        
+        if os.path.isdir(export_file):
+            export_file = export_file + "//" + file_title + ".txt"
+            export_file = os.path.abspath(export_file)
         
         extension = re.sub(".*[.](.*)$","\\1",file_title)
 
