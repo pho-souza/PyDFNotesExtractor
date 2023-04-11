@@ -24,7 +24,6 @@ CHARACTER_SUBSTITUTIONS = {
 
 config_file = os.path.abspath(pathlib.Path(__file__).parent) + ("//default_cfg.json")
 config_file = os.path.abspath(config_file)
-print("config_file: ", config_file)
 if os.path.exists(config_file):
     CONF = cfg.config_file(config_file)
 else:

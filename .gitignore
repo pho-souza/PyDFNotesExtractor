@@ -91,3 +91,5 @@ ENV/
 
 # Config files
 user_cfg.json
+files.txt
+install.bat

@@ -43,6 +43,6 @@ def main() -> None:
         # data_files=[('PyDFannots/templates',['template_html.html'])],
         install_requires=['PyMuPDF','jinja2']
     )
-
+    
 if __name__ == '__main__':
     main()

@@ -9,6 +9,7 @@ from itertools import chain
 import os
 import pathlib
 import csv
+import sys
 
 import argparse
 
@@ -24,7 +25,7 @@ def file_path(string,dir = False):
     else:
         raise FileNotFoundError(string)
 
-def parse_args() -> typ.Tuple[argparse.Namespace]:
+def parse_args(args) -> typ.Tuple[argparse.Namespace]:
     import PyDFannots.cfg as cfg
     
     config = cfg.config_file().config
@@ -60,10 +61,10 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--no-adjust-text", "-nat", dest = "adjust_text",action="store_false",
                    help = "Adjust text to eliminate hyphens and linebreaks")
     
-    g.add_argument("--columns", "-c", default=1,
+    g.add_argument("--columns", "-c", default=1, type=int,
                    help = "Reorder the annotations using same size columns")
     
-    g.add_argument("--tolerance", "-tol", default=config["TOLERANCE"],
+    g.add_argument("--tolerance", "-tol", default=config["TOLERANCE"], type=float,
                    help = "Tolerance interval for columns. Default is {}".format(config["TOLERANCE"]))
     
     g.add_argument("--image", "-img", dest = 'image', default=True,action="store_true",
@@ -103,15 +104,18 @@ def parse_args() -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--config","-cfg", default =  "",type=pathlib.Path,
                    help = "Set user config file.")
     
+    g.add_argument("--list-templates","-ltemp", default =  False,action="store_true",
+                   help = "List all the templates")
     
-    args = p.parse_args()
+    
+    args = p.parse_args(args)
     
     return args
     
     
 
-def main():
-    args = parse_args()
+def main(args=None):
+    args = parse_args(args)
     # print(args)
     
     extractor = pdf_extract.Note_extractor()
@@ -124,6 +128,9 @@ def main():
         extractor.add_config()
     # print(args)
     
+    if args.list_templates:
+        return extractor.templates
+    
     if args.input != None and args.output != None:
         input_file = args.input[0]
         export_file = args.output[0]
@@ -135,26 +142,25 @@ def main():
         export_file = os.path.abspath(export_file)
         
         
-        export_folder = os.path.dirname(export_file)
-        
         
         # print(export_folder)
         
         file_title = os.path.basename(input_file)
         file_title = re.sub("[.].*$","",file_title)
         
+        if args.template == "":
+            extension = re.sub(".*[.](.*)$","\\1",extractor.config["DEFAULT_TEMPLATE"])
+        else:
+            extension = re.sub(".*[.](.*)$","\\1",args.template)
+        
         
         if os.path.isdir(export_file):
-            export_file = export_file + "//" + file_title + ".txt"
+            export_file = export_file + "//" + file_title + "." +extension
             export_file = os.path.abspath(export_file)
-        
-        extension = re.sub(".*[.](.*)$","\\1",file_title)
-
-
+            
+        export_folder = os.path.dirname(export_file)
 
         extractor.add_pdf(input_file)
-        
-        print("\n\nTEMPLATES:", extractor.templates)
 
             
         # print(extractor.config)
