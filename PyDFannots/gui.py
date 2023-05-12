@@ -21,8 +21,6 @@ def execute_pdf_annot(pdf_location = ['tests/PDF_WIKI.pdf'],export = 'output/', 
         execution_path = execution_path + " -cfg " + config_file
         os.system(execution_path)
 
-    
-
 
 def main():
 

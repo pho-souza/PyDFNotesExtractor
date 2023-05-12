@@ -34,9 +34,23 @@ class gui_pdf_load(gui_interface):
 
         self.set_size()
         self.assets_import()
+        self.set_initial_vars()
         self.basic_ui()
         self.basic_ui_draw()
         self.basic_ui_commmands()
+        
+    def set_initial_vars(self):
+        self.values_format = ["Template","CSV","JSON"]
+        self.var_format = tk.StringVar()
+        self.var_format.set(self.values_format[0])
+        
+        self.var_il = tk.DoubleVar()
+        self.var_il.set(0.1)
+        self.var_col = tk.IntVar()
+        self.var_col.set(1)
+        self.var_tol = tk.DoubleVar()
+        self.var_tol.set(0.1)
+        self.var_template = tk.StringVar()
 
     def assets_import(self):
         self.icon_delete = tk.PhotoImage(file = os.path.abspath(self.__file_location + "//gui_assets//delete.png"))
@@ -61,10 +75,21 @@ class gui_pdf_load(gui_interface):
         self.parameters_label = ttk.Label(self.parameters_tab,text = "Add parameters")
         # self.parameters_entry = ttk.Entry(self.parameters_tab)
         self.parameters_template_label = ttk.Label(self.parameters_tab,text="Select a template")
-        self.parameters_template = ttk.Combobox(self.parameters_tab)
+        self.parameters_template = ttk.Combobox(self.parameters_tab,textvariable=self.var_template, state = 'readonly', )
         self.parameters_il_label = ttk.Label(self.parameters_tab,text="Select a intersection level between text and highlights.")
-        self.parameters_il = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.1)
+        self.parameters_il = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.1, state = 'readonly', textvariable=self.var_il)
         self.parameters_entry = ttk.Entry(self.parameters_tab)
+        self.parameters_col = ttk.Spinbox(self.parameters_tab,from_=1,to=15, increment=1, state = 'readonly', textvariable=self.var_col)
+        self.parameters_col_label = ttk.Label(self.parameters_tab,text="Select number of columns in PDF.")
+        self.parameters_tol_label = ttk.Label(self.parameters_tab,text="Select tolerance interval for columns")
+        self.parameters_tol = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.1, state = 'readonly', textvariable=self.var_tol)
+        # Default format export set to template
+        self.parameters_format_label = ttk.Label(self.parameters_tab,text="Select export format.")
+        self.parameters_format = ttk.OptionMenu(self.parameters_tab,self.var_format, self.values_format[0],*self.values_format)
+        
+        self.parameters_cfg_label = ttk.Label(self.parameters_tab,text="Load saved config.")
+        self.parameters_cfg_load = ttk.Button(self.parameters_tab,text="Load",command=self.load_cfg)
+        self.parameters_cfg_save = ttk.Button(self.parameters_tab,text="Save",command=self.save_cfg)
 
     def basic_ui_draw(self):
         self.column_1.grid(column = 1, row = 1,sticky='nwse')
@@ -84,9 +109,7 @@ class gui_pdf_load(gui_interface):
         self.column_1.grid_columnconfigure(2,weight=3)
         self.column_1.grid_columnconfigure(3,weight=6)
 
-
         self.column_2.grid_columnconfigure(0,weight=1)
-
 
         self.parameters_tab.grid(column = 0, row = 0,sticky = "nwse")
         self.parameters_label.grid(sticky = "nwse")
@@ -95,11 +118,68 @@ class gui_pdf_load(gui_interface):
         self.parameters_template.grid(sticky = "nwse")
         self.parameters_il_label.grid(sticky = "nwse")
         self.parameters_il.grid(sticky = "nwse")
-        self.edit_parameters()
+        self.parameters_col_label.grid(sticky = "nwse")
+        self.parameters_col.grid(sticky = "nwse")
+        self.parameters_tol_label.grid(sticky = "nwse")
+        self.parameters_tol.grid(sticky = "nwse")
+        self.parameters_format_label.grid(sticky = "nwse")
+        self.parameters_format.grid(sticky = "nwse")
+        self.parameters_cfg_label.grid(sticky = "nwse")
+        self.parameters_cfg_load.grid(sticky = "nwse")
+        self.parameters_cfg_save.grid(sticky = "nwse")
+        self.set_cfg()
         
     def edit_parameters(self):
+        parameters = f'-il {self.cfg["il"]} --columns {self.cfg["col"]} -tol  {self.cfg["tol"]} --template "{self.cfg["template"]}"'
         self.parameters_entry.delete('0','end')
-        self.parameters_entry.insert('0','aaaaaaaaaaaas')
+        self.parameters_entry.insert('0',parameters)
+        
+    def set_cfg(self,event=None):
+        self.cfg = {}
+        self.cfg["il"] = self.var_il.get()
+        self.cfg["col"] = self.var_col.get()
+        self.cfg["tol"] = self.var_tol.get()
+        self.cfg["template"] = self.var_template.get()
+        self.edit_parameters()
+        print(self.cfg)
+        
+    def set_vars(self):
+        self.var_il.set(self.cfg["il"])
+        self.var_col.set(self.cfg["col"])
+        self.var_tol.set(self.cfg["tol"])
+        self.var_template.set(self.cfg["template"])
+        
+    def set_new_cfg(self,cfg:dict):
+        if cfg.keys() == self.cfg.keys():
+            for entry in cfg:
+                self.cfg[entry] = cfg[entry]
+            self.set_vars()
+            self.set_cfg()
+            self.cfg_validate()
+        
+    def cfg_validate(self):
+        if not isinstance(self.cfg["il"],float):
+            self.var_col.set(0.1)
+        if not isinstance(self.cfg["col"],int):
+            self.var_col.set(1)
+        if not isinstance(self.cfg["tol"],float):
+            self.var_tol.set(0.1)
+        if not self.cfg["template"] in self.templates:
+            self.var_template.set("template_html.html")
+        self.set_cfg()
+        
+    def load_cfg(self,event = None):
+        file_cfg = filedialog.askopenfile(title="Select config file",mode='r',filetypes=(('json file','*.json'),))
+        cfg = json.load(file_cfg)
+        self.set_new_cfg(cfg)
+        print(list(cfg.keys()))
+    
+    def save_cfg(self,event = None):
+        self.set_cfg()
+        file_cfg = filedialog.asksaveasfilename(title="Save config file",filetypes=(('json file','*.json'),),defaultextension="json")
+        cfg = json.dumps(self.cfg,ensure_ascii=True,indent=4)
+        with open(file_cfg,mode='w',encoding="utf-8") as f:
+            f.write(cfg)
 
     def basic_ui_commmands(self):
         self.btn_file_selector['command'] = self.add_file
@@ -107,16 +187,21 @@ class gui_pdf_load(gui_interface):
         self.btn_remove_item["command"] = self.remove_file
         self.btn_pdf_export["command"] = self.export_folder
         
-        self.parameters_template["values"] = cli.main(['--list-templates'])
-        self.parameters_template["command"] = self.edit_parameters()
+        self.var_il.set(0.1)
+        self.var_col.set(1)
+        self.var_tol.set(0.1)
+        # self.parameters_format.set("Template")
         
+        self.templates = cli.main(['--list-templates'])
         
+        self.parameters_template["values"] = self.templates
         
-        # print(os.popen("python pydfannots.py --list-templates").read())
+        self.var_template.set("template_html.html")
 
         self.file_list.drop_target_register(DND_FILES)
 
         self.file_list.dnd_bind("<<Drop>>", self.add_file_drag_drop) #lambda e: self.file_list.insert("end", e.data))
+        self.set_cfg()
 
 
     def add_file_drag_drop(self,event):
