@@ -194,6 +194,7 @@ class Note_extractor():
             name (str): actual template name
             new_name (str): New template name
         """
+        print(type(name))
         try:
             if name:
                 actual_file = self.__path_template + "//" + name

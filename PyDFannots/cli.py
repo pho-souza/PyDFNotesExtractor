@@ -107,6 +107,9 @@ def parse_args(args) -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--list-templates","-ltemp", default =  False,action="store_true",
                    help = "List all the templates")
     
+    g.add_argument("--list-configs","-lconfig", default =  False,action="store_true",
+                   help = "List all the templates")
+    
     
     args = p.parse_args(args)
     
@@ -131,6 +134,9 @@ def main(args=None):
     if args.list_templates:
         return extractor.templates
     
+    if args.list_configs:
+        return extractor.config
+    
     if args.input != None and args.output != None:
         input_file = args.input[0]
         export_file = args.output[0]
@@ -152,10 +158,15 @@ def main(args=None):
             extension = re.sub(".*[.](.*)$","\\1",extractor.config["DEFAULT_TEMPLATE"])
         else:
             extension = re.sub(".*[.](.*)$","\\1",args.template)
+            
+        if args.format == "json":
+            extension = "json"
+        if args.format == "csv":
+            extension = "csv"
         
         
         if os.path.isdir(export_file):
-            export_file = export_file + "//" + file_title + "." +extension
+            export_file = export_file + "//" + file_title + "." + extension
             export_file = os.path.abspath(export_file)
             
         export_folder = os.path.dirname(export_file)
@@ -164,6 +175,7 @@ def main(args=None):
 
             
         # print(extractor.config)
+        
         
         if args.intersection_level != extractor.config["INTERSECTION_LEVEL"]:
             extractor.notes_extract(intersection_level=args.intersection_level)
@@ -205,7 +217,7 @@ def main(args=None):
             # print(names_fields)
             names_fields = list(set(names_fields))
             with open(export_file,'w') as csvfile:
-                writer = csv.DictWriter(csvfile,fieldnames=names_fields,doublequote=True,lineterminator="\n")
+                writer = csv.DictWriter(csvfile,fieldnames=names_fields,doublequote=True,lineterminator="\n",quotechar='"')
                 writer.writeheader()
                 writer.writerows(highlight)
             return 0
@@ -240,12 +252,16 @@ def main(args=None):
                 extractor.remove_template(arguments)
             elif isinstance(arguments, list):
                 for item in arguments:
+                    print(item)
                     extractor.remove_template(item)
                     
         if args.rename_template:
-            arguments = args.rename_template
-            if isinstance(arguments, pathlib.Path):
-                extractor.remove_template(arguments)
-            elif isinstance(arguments, list):
-                for item in arguments:
-                    extractor.remove_template(item)
+            print(type(args.rename_template))
+            if len(args.rename_template) == 2:
+                print("AAAAAA")
+                original = str(args.rename_template[0])
+                new_name = str(args.rename_template[1])
+                print(original)
+                if any(original for s in extractor.templates):
+                    print("BBBBBBB")
+                    extractor.rename_template(name = original,new_name = new_name)
