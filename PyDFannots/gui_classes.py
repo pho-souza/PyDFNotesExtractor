@@ -583,7 +583,7 @@ class gui_settings(gui_interface):
     {%- endif -%}
     {%- endif -%}
 
-  {% endfor -%}'
+  {% endfor -%}
 
 
 </article>
