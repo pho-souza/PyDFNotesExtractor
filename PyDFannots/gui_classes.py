@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinterdnd2 import DND_FILES, TkinterDnD
-import string as str
+# import string as str
 import pathlib
 from time import sleep
 
@@ -13,7 +13,8 @@ import PyDFannots.utils as utils
 import re
 import json
 import shutil
-
+from random import choices as random_choices
+import string
 
 class gui_interface():
     def __init__(self, master = None) -> None:
@@ -166,9 +167,14 @@ class gui_pdf_load(gui_interface):
     
     def edit_parameters(self):
         parameters = f'-il {self.cfg["il"]} --columns {self.cfg["col"]} -tol  {self.cfg["tol"]} --template "{self.cfg["template"]}"'
+        self.parameters_arguments = list()
         if not self.cfg["format"] == "Template":
             parameters = f'{parameters}  --format {self.cfg["format"]}'
-        # print(parameters)
+            self.parameters_arguments.append(['--format',self.cfg["format"]])
+        self.parameters_arguments.append(['-il',self.cfg["il"]])
+        self.parameters_arguments.append(['--columns',self.cfg["col"]])
+        self.parameters_arguments.append(['-tol',self.cfg["tol"]])
+        
         self.var_parameters.set(parameters)
         # print("Arguments: ",self.arguments)
         
@@ -298,7 +304,7 @@ class gui_pdf_load(gui_interface):
         for i in self.files:
             
             self.file_list.insert("end", i)
-        self.status_bar["text"] = f'There is {len(self.file_list)} PDFs files. '
+        self.status_bar["text"] = f'There are {len(self.files)} PDFs files. '
 
 
 
@@ -362,17 +368,21 @@ class gui_pdf_load(gui_interface):
 
             # print("\n\nPDF location: ",pdf)
             
-            execution_path = 'python pydfannots.py -i "' + pdf_path + '" '
-            execution_path = execution_path + ' -o "' + export + '" '
+            input_file = ['-i',pdf_path,'-o',export]#'python pydfannots.py -i "' + pdf_path + '" '
+            # output_file = ['-o',export]
+            #execution_path = execution_path + ' -o "' + export + '" '
             
             # print("\n\nPDF: ",execution_path)
             
             if os.path.exists(config_file):
-                execution_path = execution_path + ' -config "' + config_file + '" '
+                argument = input_file + ['-config',config_file]
+                # execution_path = execution_path + ' -config "' + config_file + '" '
             else:
-                execution_path = execution_path + self.parameters_entry["text"]
-            # print(execution_path)
-            os.popen(execution_path).read()
+                argument = input_file + ['-il',f'{self.cfg["il"]}', '-tol',f'{self.cfg["tol"]}','--columns',f'{self.cfg["col"]}','--template',f'{self.cfg["template"]}']
+                # execution_path = execution_path + self.parameters_entry["text"]
+            print(argument)
+            # os.popen(execution_path).read()
+            cli.main(argument)
 
         # print("\n\nEnd!")
 
@@ -389,16 +399,26 @@ class gui_settings(gui_interface):
         self.basic_ui()
         self.basic_ui_draw()
         self.basic_ui_commmands()
+        self.selected_items = []
 
        
     def basic_ui(self):
-        self.col_1 = tk.Frame(self.ui,highlightbackground="blue", highlightthickness=2)
-        self.col_2 = tk.Frame(self.ui,highlightbackground="green", highlightthickness=2)
+        self.style = ttk.Style(self.ui)
+        self.style.configure('lefttab.TNotebook', tabposition='wn')
+        
+        self.notebook = ttk.Notebook(self.ui, style='lefttab.TNotebook')
+        
+        
+        
+        # Config of template tab
+        self.template_tab = tk.Frame(self.ui,highlightbackground="cyan", highlightthickness=2)
+        self.col_1 = tk.Frame(self.template_tab,highlightbackground="blue", highlightthickness=2)
+        self.col_2 = tk.Frame(self.template_tab,highlightbackground="green", highlightthickness=2)
         self.file_list = tk.Listbox(self.col_1)
         self.temp_text = tk.Text(self.col_2)
         self.btn_add_template = ttk.Button(self.col_1,text="+")
         self.btn_del_template = ttk.Button(self.col_1, text = "-")
-
+        self.btn_load_template = ttk.Button(self.col_1, text = "Load external template")
         # Grid com atalhos para remover item selecionado ou todos
         self.column_btns = ttk.Frame(self.col_1)
         # self.btn_remove_item = ttk.Button(self.column_btns,image=self.icon_delete)
@@ -407,18 +427,28 @@ class gui_settings(gui_interface):
         self.parameters_tab = ttk.Frame(self.col_2)
         self.parameters_label = ttk.Label(self.parameters_tab,text = "Adicione parametros")
         self.rename_entry = ttk.Entry(self.parameters_tab)
-        self.btn_rename_template = ttk.Button(self.parameters_tab, text = "Rename")
+        self.btn_rename_template = ttk.Button(self.parameters_tab, text = "Save")
+        
+        #### Configs template
+        self.configs_tab = ttk.Frame(self.ui)
+        self.config_items = dict()
+        self.config_labels = dict()
 
     def basic_ui_draw(self):
+        self.ui.grid_columnconfigure(0,weight=10)
+        self.notebook.grid(sticky="nwse",row=0,column=0)
+        
         self.col_1.grid(column = 1, row = 1,sticky='nwse', rowspan=3)
         self.col_2.grid(column = 2, row = 1,sticky='nwse')
         self.file_list.grid(column = 1, row = 1, columnspan = 3,sticky = "nwse")
         self.temp_text.grid(sticky="nwse")
         self.btn_add_template.grid(column=1,row = 2,sticky = "nwse")
         self.btn_del_template.grid(column=2,row = 2,sticky = "nwse")
+        self.btn_load_template.grid(column=3, row = 2, sticky = "nwse")
         self.temp_text.grid(row = 3,sticky="nwse")
-        self.ui.grid_columnconfigure(1,weight=7)
-        self.ui.grid_columnconfigure(2,weight=3)
+        
+        self.template_tab.grid_columnconfigure(1,weight=7)
+        self.template_tab.grid_columnconfigure(2,weight=3)
 
         self.column_btns.grid(column=4,row=1,rowspan=2)
 
@@ -434,11 +464,17 @@ class gui_settings(gui_interface):
         self.parameters_label.grid(sticky = "nwse")
         self.rename_entry.grid(sticky = "nwse", columnspan=2)
         self.btn_rename_template.grid(row = 1, column=4,sticky = "nwse")
+        
+        ### Config tab
+        self.configs_tab.grid(sticky="nwse")
+        self.configs_tab.grid_columnconfigure(0, weight=1)
+        
+        
 
     def basic_ui_commmands(self):
+        self.notebook.add(self.template_tab,text = "Templates")
+        self.notebook.add(self.configs_tab,text = "Configuration")
         self.btn_add_template['command'] = self.add_template
-        # self.btn_remove_all["command"] = self.remove_all
-        # self.btn_remove_item["command"] = self.remove_file
         self.btn_del_template["command"] = self.del_template
         self.btn_rename_template["command"] = self.rename_template
         self.file_list.bind("<ButtonRelease>",self.load_template)
@@ -446,6 +482,43 @@ class gui_settings(gui_interface):
         # self.templates = cli.main(['--list-templates'])
         self.update_templates()
         self.configs = cli.main(['--list-configs'])
+        
+        for conf in self.configs:
+            config = self.configs[conf]
+            print(f'{conf}: {config} - {type(config)}')
+            self.config_items[conf] = dict()
+            self.config_items[conf]["frame"] = ttk.Frame(self.configs_tab)
+            self.config_items[conf]["label"] = ttk.Label(self.config_items[conf]["frame"],text=conf, width=30)
+            
+            if isinstance(config, str):
+                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60)
+            elif isinstance(config,list):
+                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"],width = 60)
+            elif isinstance(config,bool):
+                self.config_items[conf]["vars"] = tk.IntVar()
+                self.config_items[conf]["entry"] = tk.Checkbutton(self.config_items[conf]["frame"], variable=self.config_items[conf]["vars"])
+            elif isinstance(config,float):
+                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60)
+            else:
+                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60)
+            self.config_items[conf]["frame"].grid(sticky="nwse")
+            self.config_items[conf]["label"].grid(column = 1,row = 1,sticky="WE")
+            self.config_items[conf]["entry"].grid(column = 2,row = 1,sticky="WE")
+        self.set_config()
+            
+    def set_config(self):
+        for conf in self.configs:
+            config = self.configs[conf]
+            tk_item = self.config_items[conf]["entry"]
+            if isinstance(tk_item, (tk.Entry)):
+                self.config_items[conf]["entry"].delete(0,"end")
+                self.config_items[conf]["entry"].insert("end",''.join(str(config)))
+            elif isinstance(tk_item, tk.Checkbutton):
+                self.config_items[conf]["vars"].set(config)
+            else:
+                self.config_items[conf]["entry"].delete(0,"end")
+                self.config_items[conf]["entry"].insert("end",config)
+
         
         # print(self.configs)
         
@@ -478,23 +551,96 @@ class gui_settings(gui_interface):
     def export_folder(self):
         self.files = list(self.file_list.get(0,tk.END))
         # print(self.files)
+    
+    @property
+    def default_template(self):
+        file = '''
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+</head>
+<body>
+  {% set anterior = namespace('') %}
+  {% set anterior.content = highlights[0].content %}
+  </pre>
+  <article>
+  {%- for annot in highlights %}
+    {%- if annot.text -%}
+    {%- if  annot.content -%}
+    <p style="background-color: {{annot.color_name}};">{{annot.type}} - {{annot.text}}</p>
+    <li>{{annot.content}}</li>
+    {%- else -%}
+    <p style="background-color: {{annot.color_name}};">{{annot.type}} - {{annot.text}}</p>
+    {%- endif -%}
+    {% else %}
+    {%- if  annot.text -%}
+    <li>{{annot.type}} - {{annot.content}}</li>
+    {%- else -%}
+    {%- endif -%}
+    {%- endif -%}
+
+  {% endfor -%}'
+
+
+</article>
+
+</body>
+</html> 
+        '''
+        return file
 
     def add_template(self):
-        pass
+        # if self.selected_items:
+        self.selected_items = []
+        file = self.default_template
+        self.temp_text.delete("1.0","end")
+        self.temp_text.insert("end",file)
+        self.rename_entry.delete(0,"end")
+        self.rename_entry.insert("end","new_template.html")
+        self.update_templates()
     
     def del_template(self):
         if self.selected_items:
-            print(f'cli.main(["--delete-template {self.file_list.get(self.selected_items)}"])')
-            os.popen(f'python pydfannots.py --delete-template "{self.file_list.get(self.selected_items)}"')
-            # 
+            delete_argument = ["--delete-template",f'{self.file_list.get(self.selected_items)}']
+            cli.main(delete_argument)
+            self.selected_items = []
+        self.update_templates()
+
     def rename_template(self):
+        name = "random_write_" + ''.join(random_choices(string.ascii_letters,k = 7))
+        file_name = os.path.abspath(name)
+        file = open(file_name,mode = 'w',encoding= 'utf-8')
+        template = self.temp_text.get(1.0,'end')
+        print(template)
+        file.write(template)
+        file.close()
+        
         if self.selected_items:
-            argument = f'--rename-template "{self.file_list.get(self.selected_items)}" "{self.rename_entry.get()}"'
-             # print(f'cli.main(["--rename-template "{self.file_list.get(self.selected_items)}" "{self.rename_entry.get()}"])')
-            # cli.main([argument])
-            exec_file = "python pydfannots.py " + argument
-            os.popen(exec_file)
-            self.load_template()
+            rename_argument_1 = ["--rename-template",f'{self.file_list.get(self.selected_items)}',f'{self.rename_entry.get()}']
+            cli.main(rename_argument_1)
+        add_argument = ['--import-template',f'{file_name}']
+        rename_argument = ["--rename-template",f'{name}',f'{self.rename_entry.get()}']
+        cli.main(add_argument)
+        cli.main(rename_argument)
+        # if self.selected_items:
+        #     cli.main(delete_argument)
+        # os.popen(add_argument)
+        # cli.main(add_argument)
+        
+        self.selected_items = []
+        
+        os.remove(file_name)
+        
+        # rename_argument = f'python pydfannots.py  --rename-template "{name}" {self.rename_entry.get()}'
+        # cli.main(rename_argument)
+        # os.popen(rename_argument)
+            
+            
+        self.update_templates()
 
     def remove_all(self):
         self.file_list.delete(0,tk.END)

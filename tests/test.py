@@ -3,6 +3,7 @@ import PyDFannots.pydfannots as  pydfannots
 import PyDFannots.utils as utils
 import PyDFannots.cfg as cfg
 import json
+import os
 import re
 from importlib import reload
 
@@ -19,6 +20,9 @@ file_title = re.sub("[.].pdf","",file_title)
 
 html_export = export_folder + "/" + file_title + ".html"
 
+path = os.path.abspath('temp.txt')
+
+utils.path_normalizer(path)
 
 reload(cfg)
 

@@ -3,6 +3,7 @@ import operator
 import PyDFannots.cfg as cfg
 import os
 import pathlib
+import re
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -240,6 +241,16 @@ def annots_reorder_columns(annotations: dict,columns = 1,tolerance = 0.1) -> dic
                     
     
     return temp
+
+def path_normalizer(path:str):
+    """
+    Convert paths with \\ to /
+
+    Args:
+        path (str): string
+    """
+    result = re.sub('\\\\',"/",path)
+    return result
 
 def md_export(annotations,title = "Title",template = DEFAULT_TEMPLATE):
     """

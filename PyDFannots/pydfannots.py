@@ -178,9 +178,13 @@ class Note_extractor():
         
         file_name = os.path.basename(full_path)
         
-        move_path = self.__path_template + "//" + file_name
+        move_path = self.__path_template + "/" + file_name
         
-        move_path = os.path.abspath(move_path)
+        move_path = utils.path_normalizer(os.path.abspath(move_path))
+        
+        full_path = utils.path_normalizer(full_path)
+        
+        # full_path = re.sub('\\',"/", full_path)
         
         # if os.path.exists(move_path):
         shutil.copy(src=full_path,dst=move_path)
@@ -198,10 +202,10 @@ class Note_extractor():
         try:
             if name:
                 actual_file = self.__path_template + "//" + name
-                actual_file = os.path.abspath(actual_file)
+                actual_file = utils.path_normalizer(os.path.abspath(actual_file))
             if new_name:
                 new_file = self.__path_template + "//" + new_name
-                new_file = os.path.abspath(new_file)
+                new_file = utils.path_normalizer(os.path.abspath(new_file))
             if os.path.exists(actual_file):
                 shutil.move(actual_file,new_file)
                 print("File {} renamed to {}".format(actual_file,new_file))
@@ -216,7 +220,7 @@ class Note_extractor():
         """
         try:
             file = self.__path_template + "//" + name
-            file = os.path.abspath(file)
+            file = utils.path_normalizer(os.path.abspath(file))
             if os.path.exists(file):
                 os.remove(file)
                 print("File {} removed from templates folder".format(file))

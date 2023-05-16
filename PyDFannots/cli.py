@@ -242,6 +242,8 @@ def main(args=None):
             arguments = args.import_template
             if isinstance(arguments, pathlib.Path):
                 extractor.import_template(arguments)
+            elif isinstance(arguments, str):
+                extractor.import_template(arguments)
             elif isinstance(arguments, list):
                 for imported in arguments:
                     extractor.import_template(imported)
@@ -265,3 +267,7 @@ def main(args=None):
                 if any(original for s in extractor.templates):
                     print("BBBBBBB")
                     extractor.rename_template(name = original,new_name = new_name)
+
+
+if __name__ == '__main__':
+    main()
