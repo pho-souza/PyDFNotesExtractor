@@ -25,10 +25,17 @@ def execute_pdf_annot(pdf_location = ['tests/PDF_WIKI.pdf'],export = 'output/', 
 def main():
 
     # root = tk.Tk()
+    logo = tk.PhotoImage(file = "PyDFannots/gui_assets/logo.png")
+    
+    print(f'Existe: {os.path.exists("PyDFannots/gui_assets/logo.png")}')
 
     root = TkinterDnD.Tk()
+    
+    root.iconphoto(False, logo)
 
     root.geometry('800x800')
+    
+    
 
     root.minsize(width = 600, height = 400)
 

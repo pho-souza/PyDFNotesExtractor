@@ -184,6 +184,8 @@ class Note_extractor():
         
         full_path = utils.path_normalizer(full_path)
         
+        print(full_path)
+        
         # full_path = re.sub('\\',"/", full_path)
         
         # if os.path.exists(move_path):

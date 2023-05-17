@@ -111,7 +111,7 @@ class gui_pdf_load(gui_interface):
         self.row_1.grid(column = 1, row = 1,sticky='nwse')
         self.row_2.grid(column = 1, row = 2,sticky='nwse')
         self.row_3.grid(column = 1, row = 3,sticky='nwse')
-        self.file_list.grid(column = 1, row = 1, columnspan = 3,sticky = "nwse")
+        self.file_list.grid(column = 1, row = 1, columnspan = 2,sticky = "nwse")
 
         self.btn_file_selector.grid(column=1,row = 2,sticky = "nwse")
         self.btn_pdf_export.grid(column=2,row = 2,sticky = "nwse")
@@ -124,9 +124,9 @@ class gui_pdf_load(gui_interface):
         self.btn_remove_item.grid()
         self.btn_remove_all.grid()
 
-        self.row_1.grid_columnconfigure(1,weight=3)
-        self.row_1.grid_columnconfigure(2,weight=3)
-        self.row_1.grid_columnconfigure(3,weight=6)
+        self.row_1.grid_columnconfigure(1,weight=5)
+        self.row_1.grid_columnconfigure(2,weight=5)
+        # self.row_1.grid_columnconfigure(3,weight=6)
         
         self.row_1.grid_rowconfigure(1,weight=7)
         # self.row_1.grid_rowconfigure(2,weight=3)
@@ -206,6 +206,7 @@ class gui_pdf_load(gui_interface):
             self.cfg_validate()
         
     def cfg_validate(self, event = None):
+        self.load_templates()
         if not isinstance(self.cfg["il"],float):
             self.var_col.set(0.1)
         if not isinstance(self.cfg["col"],int):
@@ -215,6 +216,10 @@ class gui_pdf_load(gui_interface):
         if not self.cfg["template"] in self.templates:
             self.var_template.set("template_html.html")
         self.set_cfg()
+        
+    def load_templates(self, event = None):
+        self.templates = cli.main(['--list-templates'])
+        self.parameters_template["values"] = self.templates
         
     def load_cfg(self,event = None):
         file_cfg = filedialog.askopenfile(title="Select config file",mode='r',filetypes=(('json file','*.json'),))
@@ -381,10 +386,7 @@ class gui_pdf_load(gui_interface):
                 argument = input_file + ['-il',f'{self.cfg["il"]}', '-tol',f'{self.cfg["tol"]}','--columns',f'{self.cfg["col"]}','--template',f'{self.cfg["template"]}']
                 # execution_path = execution_path + self.parameters_entry["text"]
             print(argument)
-            # os.popen(execution_path).read()
             cli.main(argument)
-
-        # print("\n\nEnd!")
 
 
 
@@ -415,10 +417,11 @@ class gui_settings(gui_interface):
         self.col_1 = tk.Frame(self.template_tab,highlightbackground="blue", highlightthickness=2)
         self.col_2 = tk.Frame(self.template_tab,highlightbackground="green", highlightthickness=2)
         self.file_list = tk.Listbox(self.col_1)
-        self.temp_text = tk.Text(self.col_2)
         self.btn_add_template = ttk.Button(self.col_1,text="+")
         self.btn_del_template = ttk.Button(self.col_1, text = "-")
         self.btn_load_template = ttk.Button(self.col_1, text = "Load external template")
+        self.vertical_bar = ttk.Scrollbar(self.col_2, orient = 'vertical')
+        self.temp_text = tk.Text(self.col_2, yscrollcommand=self.vertical_bar.set)
         # Grid com atalhos para remover item selecionado ou todos
         self.column_btns = ttk.Frame(self.col_1)
         # self.btn_remove_item = ttk.Button(self.column_btns,image=self.icon_delete)
@@ -445,7 +448,8 @@ class gui_settings(gui_interface):
         self.btn_add_template.grid(column=1,row = 2,sticky = "nwse")
         self.btn_del_template.grid(column=2,row = 2,sticky = "nwse")
         self.btn_load_template.grid(column=3, row = 2, sticky = "nwse")
-        self.temp_text.grid(row = 3,sticky="nwse")
+        self.temp_text.grid(column = 0,row = 3,sticky="nwse")
+        self.vertical_bar.grid(column = 1,row = 3, sticky='nwse')
         
         self.template_tab.grid_columnconfigure(1,weight=7)
         self.template_tab.grid_columnconfigure(2,weight=3)
@@ -478,6 +482,8 @@ class gui_settings(gui_interface):
         self.btn_del_template["command"] = self.del_template
         self.btn_rename_template["command"] = self.rename_template
         self.file_list.bind("<ButtonRelease>",self.load_template)
+        
+        self.vertical_bar.config(command = self.temp_text.yview)
         
         # self.templates = cli.main(['--list-templates'])
         self.update_templates()
@@ -567,6 +573,7 @@ class gui_settings(gui_interface):
   {% set anterior = namespace('') %}
   {% set anterior.content = highlights[0].content %}
   </pre>
+  <h1>{{title}}</h1>
   <article>
   {%- for annot in highlights %}
     {%- if annot.text -%}
@@ -626,18 +633,10 @@ class gui_settings(gui_interface):
         rename_argument = ["--rename-template",f'{name}',f'{self.rename_entry.get()}']
         cli.main(add_argument)
         cli.main(rename_argument)
-        # if self.selected_items:
-        #     cli.main(delete_argument)
-        # os.popen(add_argument)
-        # cli.main(add_argument)
         
         self.selected_items = []
         
         os.remove(file_name)
-        
-        # rename_argument = f'python pydfannots.py  --rename-template "{name}" {self.rename_entry.get()}'
-        # cli.main(rename_argument)
-        # os.popen(rename_argument)
             
             
         self.update_templates()

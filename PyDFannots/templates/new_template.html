@@ -11,6 +11,7 @@
   {% set anterior = namespace('') %}
   {% set anterior.content = highlights[0].content %}
   </pre>
+  <h1>{{title}}</h1>
   <article>
   {%- for annot in highlights %}
     {%- if annot.text -%}
@@ -27,7 +28,7 @@
     {%- endif -%}
     {%- endif -%}
 
-  {% endfor -%}'
+  {% endfor -%}
 
 
 </article>
