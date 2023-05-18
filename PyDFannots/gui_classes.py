@@ -2,10 +2,12 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
 from tkinter import messagebox
-from tkinterdnd2 import DND_FILES, TkinterDnD
+# from tkinterdnd2 import DND_FILES, TkinterDnD
 # import string as str
 import pathlib
 from time import sleep
+
+from PyDFannots.cfg import config_file as config_class
 
 import os
 import PyDFannots.cli as cli
@@ -242,6 +244,8 @@ class gui_pdf_load(gui_interface):
         self.btn_remove_item["command"] = self.remove_file
         self.btn_pdf_export["command"] = self.export_folder
         
+        self.file_list.bind("<Delete>", self.remove_file)
+        
         self.var_il.set(0.1)
         self.var_col.set(1)
         self.var_tol.set(0.1)
@@ -273,9 +277,9 @@ class gui_pdf_load(gui_interface):
         
         self.var_template.set("template_html.html")
 
-        self.file_list.drop_target_register(DND_FILES)
+        # self.file_list.drop_target_register(DND_FILES)
 
-        self.file_list.dnd_bind("<<Drop>>", self.add_file_drag_drop) 
+        # self.file_list.dnd_bind("<<Drop>>", self.add_file_drag_drop) 
         self.set_cfg()
 
     def add_file_drag_drop(self,event):
@@ -342,7 +346,7 @@ class gui_pdf_load(gui_interface):
     def remove_all(self):
         self.file_list.delete(0,tk.END)
     
-    def remove_file(self):
+    def remove_file(self,event= None):
         selected_items = self.file_list.curselection()
         for item in selected_items:
             # print(item)
@@ -434,6 +438,10 @@ class gui_settings(gui_interface):
         
         #### Configs template
         self.configs_tab = ttk.Frame(self.ui)
+        self.config_frame = ttk.Frame(self.configs_tab)
+        self.config_label = ttk.Label(self.config_frame,text="Configuration of PyDFannots")
+        self.config_default = ttk.Button(self.config_frame, text = "Default Config")
+        self.config_save = ttk.Button(self.config_frame,text = "Save Config")
         self.config_items = dict()
         self.config_labels = dict()
 
@@ -474,6 +482,7 @@ class gui_settings(gui_interface):
         self.configs_tab.grid_columnconfigure(0, weight=1)
         
         
+        
 
     def basic_ui_commmands(self):
         self.notebook.add(self.template_tab,text = "Templates")
@@ -497,33 +506,92 @@ class gui_settings(gui_interface):
             self.config_items[conf]["label"] = ttk.Label(self.config_items[conf]["frame"],text=conf, width=30)
             
             if isinstance(config, str):
-                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60)
+                self.config_items[conf]["vars"] = tk.StringVar()
+                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60, textvariable=self.config_items[conf]["vars"])
             elif isinstance(config,list):
-                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"],width = 60)
+                self.config_items[conf]["entry"] = tk.Listbox(self.config_items[conf]["frame"],width = 60)
             elif isinstance(config,bool):
-                self.config_items[conf]["vars"] = tk.IntVar()
+                self.config_items[conf]["vars"] = tk.BooleanVar()
                 self.config_items[conf]["entry"] = tk.Checkbutton(self.config_items[conf]["frame"], variable=self.config_items[conf]["vars"])
             elif isinstance(config,float):
-                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60)
+                self.config_items[conf]["vars"] = tk.DoubleVar()
+                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60, textvariable=self.config_items[conf]["vars"])
             else:
                 self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60)
             self.config_items[conf]["frame"].grid(sticky="nwse")
             self.config_items[conf]["label"].grid(column = 1,row = 1,sticky="WE")
             self.config_items[conf]["entry"].grid(column = 2,row = 1,sticky="WE")
+        self.load_config()
         self.set_config()
+        self.config_frame.grid(sticky="nwse")
+        self.config_label.grid(row = 0,sticky="nwse")
+        self.config_default.grid(row = 1, column=1,sticky="nwse")
+        self.config_save.grid(row = 1, column=2,sticky="nwse")
+        
+        self.config_default['command'] = self.restore_config
+        self.config_save['command'] = self.save_config
+        
             
     def set_config(self):
+        """
+        Set the self.config value to all entries in configuration tab
+        """
         for conf in self.configs:
             config = self.configs[conf]
             tk_item = self.config_items[conf]["entry"]
             if isinstance(tk_item, (tk.Entry)):
-                self.config_items[conf]["entry"].delete(0,"end")
-                self.config_items[conf]["entry"].insert("end",''.join(str(config)))
+                self.config_items[conf]["vars"].set(config)
+            elif isinstance(tk_item, tk.Listbox):
+                self.config_items[conf]["entry"].delete('0','end')
+                for i in config:
+                    self.config_items[conf]["entry"].insert('end',i)
             elif isinstance(tk_item, tk.Checkbutton):
                 self.config_items[conf]["vars"].set(config)
             else:
-                self.config_items[conf]["entry"].delete(0,"end")
-                self.config_items[conf]["entry"].insert("end",config)
+                pass
+        self.get_config()
+                
+    def get_config(self):
+        """
+        Get the self.config values from all entrys in configuration tab
+        """
+        for conf in self.configs:
+            tk_item = self.config_items[conf]["entry"]
+            if isinstance(tk_item, (tk.Entry)):
+                self.configs[conf] = self.config_items[conf]["vars"].get()
+            elif isinstance(tk_item, tk.Checkbutton):
+                self.configs[conf] = self.config_items[conf]["vars"].get()
+            else:
+                self.configs[conf] = self.config_items[conf]["entry"].get(0,'end')
+                
+    def load_config(self,from_file = True):
+        """
+        Load configuration if exist default configuration. If don't, load from cfg settings
+        """
+        if os.path.exists("default_cfg.json") and from_file:
+            file = open("default_cfg.json",mode='r',encoding='utf-8')
+            self.configs = json.load(file)
+        else:
+            self.configs = cli.main(['--list-configs'])
+        # self.set_config()
+            
+    def save_config(self):
+        self.get_config()
+        file = json.dumps(self.configs,ensure_ascii=True,indent=4)
+        with open("default_cfg.json", mode='w', encoding='utf-8') as f:
+            f.write(file)
+        print("SAVED")
+            
+    def restore_config(self):
+        """
+        Restore default settings from configuration class
+        """
+        cfg = config_class("")
+        self.configs = cfg.default
+        print(self.configs)
+        # self.get_config()
+        self.set_config()
+        print("LOADED")
 
         
         # print(self.configs)

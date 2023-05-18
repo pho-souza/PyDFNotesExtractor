@@ -260,12 +260,10 @@ def main(args=None):
         if args.rename_template:
             print(type(args.rename_template))
             if len(args.rename_template) == 2:
-                print("AAAAAA")
                 original = str(args.rename_template[0])
                 new_name = str(args.rename_template[1])
                 print(original)
                 if any(original for s in extractor.templates):
-                    print("BBBBBBB")
                     extractor.rename_template(name = original,new_name = new_name)
 
 
