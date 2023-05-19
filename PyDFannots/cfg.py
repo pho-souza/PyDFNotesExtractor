@@ -1,5 +1,6 @@
 import json
 import pathlib
+import re
 import os
 
 class config_file:
@@ -52,16 +53,21 @@ class config_file:
         default = self.__default["config"]
         
         # Default values
-        project_folder = os.path.abspath(pathlib.Path(__file__).parent)
+        project_folder = os.path.relpath(pathlib.Path(__file__).parent)
+        project_folder = re.sub("\\\\","/",project_folder)
+        
+        template_folder = project_folder + "//templates/"
         default.setdefault("DEFAULT_TEMPLATE","template_html.html")
         default.setdefault("IMG_FOLDER","img/")
-        default.setdefault("TEMPLATE_FOLDER",os.path.abspath(project_folder + "//templates/"))
-        default.setdefault("DEFAULT_COLOR",[1,1,0])
+        default.setdefault("TEMPLATE_FOLDER",template_folder)
+        default.setdefault("DEFAULT_COLOR",[1.0,1.0,0.0])
         default.setdefault("INTERSECTION_LEVEL",0.1)
+        default.setdefault("COLUMNS",1)
         default.setdefault("TOLERANCE",0.1)
         default.setdefault("ADJUST_COLOR",True)
         default.setdefault("ADJUST_DATE",True)
         default.setdefault("ADJUST_TEXT",True)
         default.setdefault("IMAGE",True)
+        default.setdefault("INK",True)
         default.setdefault("ADJUST_COLOR",True)
         

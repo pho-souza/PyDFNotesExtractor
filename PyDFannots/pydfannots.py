@@ -231,8 +231,16 @@ class Note_extractor():
         
     @property
     def templates(self):
+        """Return templates in tempaltes folder.
+
+        Returns:
+            list: list of files in template folder
+        """
         path_template = self.__path_template
         files = os.listdir(path_template)
+        for file in range(0,len(files)):
+            if os.path.isdir(files[file]):
+                files.remove(files[file])            
         return files
             
     def get_metadata(self):

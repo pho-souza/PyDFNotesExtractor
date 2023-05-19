@@ -1,5 +1,5 @@
 import tkinter as tk
-# from tkinterdnd2 import TkinterDnD
+from tkinterdnd2 import TkinterDnD
 import tkinter.ttk as ttk
 import PyDFannots.gui_classes as gui
 import os
@@ -22,12 +22,12 @@ def execute_pdf_annot(pdf_location = ['tests/PDF_WIKI.pdf'],export = 'output/', 
 
 def main():
 
-    root = tk.Tk()
+    # root = tk.Tk()
     
     
     # print(f'Existe: {os.path.exists("PyDFannots/gui_assets/logo.ico")}')
 
-    # root = TkinterDnD.Tk()
+    root = TkinterDnD.Tk()
     
     
 
@@ -57,8 +57,10 @@ def main():
     load_pdf.set_size(width=root.winfo_screenmmwidth(),height=root.winfo_screenmmheight())
 
 
-    pdf_settings = gui.gui_settings(notebook)
 
+    pdf_settings = gui.gui_settings(notebook)
+    
+    # load_pdf.cfg = pdf_settings.configs
     # load_pdf.file_list.drop_target_register(DND_FILES)
     # load_pdf.file_list.dnd_bind('<<Drop>>', lambda e: load_pdf.file_list.insert(tk.END, e.data.sub('\\{','').strip('}')))
 

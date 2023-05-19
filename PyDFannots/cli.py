@@ -101,7 +101,7 @@ def parse_args(args) -> typ.Tuple[argparse.Namespace]:
                    metavar=('name','new_name'),
                    help = "Change name.")
     
-    g.add_argument("--config","-cfg", default =  "",type=pathlib.Path,
+    g.add_argument("--config","-cfg", default =  "default_cfg.json",type=pathlib.Path,
                    help = "Set user config file.")
     
     g.add_argument("--list-templates","-ltemp", default =  False,action="store_true",
@@ -132,9 +132,11 @@ def main(args=None):
     # print(args)
     
     if args.list_templates:
+        print(extractor.templates)
         return extractor.templates
     
     if args.list_configs:
+        print(extractor.config)
         return extractor.config
     
     if args.input != None and args.output != None:
@@ -174,7 +176,11 @@ def main(args=None):
         extractor.add_pdf(input_file)
 
             
-        # print(extractor.config)
+        configs = extractor.config
+        
+        annex_folder = configs["IMG_FOLDER"]
+        image_extract =  configs["IMAGE"]
+        ink_extract =  configs["INK"]
         
         
         if args.intersection_level != extractor.config["INTERSECTION_LEVEL"]:
@@ -195,11 +201,11 @@ def main(args=None):
         if args.columns > 1 and args.tolerance:
             extractor.reorder_columns(columns=args.columns,tolerance=args.tolerance)
         
-        if args.image:
-            extractor.extract_image(location=export_folder)
+        if args.image and image_extract:
+            extractor.extract_image(location=export_folder,folder=annex_folder)
         
-        if args.ink_annotation:
-            extractor.extract_ink(location=export_folder)
+        if args.ink_annotation and ink_extract:
+            extractor.extract_ink(location=export_folder,folder = annex_folder)
 
         highlight = extractor.highlights
         

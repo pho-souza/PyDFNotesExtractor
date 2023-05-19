@@ -2,19 +2,16 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
 from tkinter import messagebox
-# from tkinterdnd2 import DND_FILES, TkinterDnD
+from tkinterdnd2 import DND_FILES
 # import string as str
 import pathlib
-from time import sleep
 
 from PyDFannots.cfg import config_file as config_class
 
 import os
 import PyDFannots.cli as cli
-import PyDFannots.utils as utils
 import re
 import json
-import shutil
 from random import choices as random_choices
 import string
 
@@ -55,6 +52,10 @@ class gui_pdf_load(gui_interface):
         self.var_tol = tk.DoubleVar()
         self.var_tol.set(0.1)
         self.var_template = tk.StringVar()
+        self.var_ink = tk.BooleanVar()
+        self.var_ink.set(True)
+        self.var_img = tk.BooleanVar()
+        self.var_img.set(True)
         
         self.var_parameters = tk.StringVar()
         self.var_parameters.set("")
@@ -71,9 +72,9 @@ class gui_pdf_load(gui_interface):
         self.icon_trash = tk.PhotoImage(file = os.path.abspath(self.__file_location + "//gui_assets//trash.png"))
        
     def basic_ui(self):
-        self.row_1 = tk.Frame(self.ui,highlightbackground="blue", highlightthickness=2)
-        self.row_2 = tk.Frame(self.ui,highlightbackground="green", highlightthickness=2)
-        self.row_3 = tk.Frame(self.ui,highlightbackground="cyan", highlightthickness=2)
+        self.row_1 = tk.Frame(self.ui)
+        self.row_2 = tk.Frame(self.ui)
+        self.row_3 = tk.Frame(self.ui)
         self.file_list = tk.Listbox(self.row_1)
 
         
@@ -91,19 +92,23 @@ class gui_pdf_load(gui_interface):
         self.parameters_template_label = ttk.Label(self.parameters_tab,text="Select a template")
         self.parameters_template = ttk.Combobox(self.parameters_tab,textvariable=self.var_template, state = 'readonly', )
         self.parameters_il_label = ttk.Label(self.parameters_tab,text="Select a intersection level between text and highlights.")
-        self.parameters_il = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.1, state = 'readonly', textvariable=self.var_il)
+        self.parameters_il = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.05, state = 'readonly', textvariable=self.var_il)
         self.parameters_entry = ttk.Label(self.parameters_tab,textvariable=self.var_parameters)
         self.parameters_col = ttk.Spinbox(self.parameters_tab,from_=1,to=15, increment=1, state = 'readonly', textvariable=self.var_col)
         self.parameters_col_label = ttk.Label(self.parameters_tab,text="Select number of columns in PDF.")
         self.parameters_tol_label = ttk.Label(self.parameters_tab,text="Select tolerance interval for columns")
-        self.parameters_tol = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.1, state = 'readonly', textvariable=self.var_tol)
+        self.parameters_tol = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.05, state = 'readonly', textvariable=self.var_tol)
+        self.parameters_img_label = ttk.Label(self.parameters_tab,text="Extract images")
+        self.parameters_img = ttk.Checkbutton(self.parameters_tab, variable=self.var_img)
+        self.parameters_ink_label = ttk.Label(self.parameters_tab,text="Extract ink annotations")
+        self.parameters_ink = ttk.Checkbutton(self.parameters_tab, variable=self.var_ink)
         # Default format export set to template
         self.parameters_format_label = ttk.Label(self.parameters_tab,text="Select export format.")
         self.parameters_format = ttk.Combobox(self.parameters_tab,textvariable=self.var_format, state = 'readonly', )
         
-        self.parameters_cfg_label = ttk.Label(self.parameters_tab,text="Load saved config.")
-        self.parameters_cfg_load = ttk.Button(self.parameters_tab,text="Load",command=self.load_cfg)
-        self.parameters_cfg_save = ttk.Button(self.parameters_tab,text="Save",command=self.save_cfg)
+        # self.parameters_cfg_label = ttk.Label(self.parameters_tab,text="Load saved config.")
+        # self.parameters_cfg_load = ttk.Button(self.parameters_tab,text="Load",command=self.load_cfg)
+        # self.parameters_cfg_save = ttk.Button(self.parameters_tab,text="Save",command=self.save_cfg)
         
         # Status bar
         self.status_bar = ttk.Label(self.row_3)
@@ -128,11 +133,8 @@ class gui_pdf_load(gui_interface):
 
         self.row_1.grid_columnconfigure(1,weight=5)
         self.row_1.grid_columnconfigure(2,weight=5)
-        # self.row_1.grid_columnconfigure(3,weight=6)
         
         self.row_1.grid_rowconfigure(1,weight=7)
-        # self.row_1.grid_rowconfigure(2,weight=3)
-        # self.row_1.grid_rowconfigure(3,weight=6)
 
         self.row_2.grid_columnconfigure(1,weight=6)
         self.row_2.grid_columnconfigure(2,weight=3)
@@ -149,54 +151,67 @@ class gui_pdf_load(gui_interface):
         self.parameters_col.grid(row = 3, column = 1,sticky = "nwse")
         self.parameters_tol_label.grid(row = 4, sticky = "nwse")
         self.parameters_tol.grid(row = 4, column = 1,sticky = "nwse")
-        self.parameters_format_label.grid(row = 5, sticky = "nwse")
-        self.parameters_format.grid(row = 5, column = 1,sticky = "nwse")
-        self.parameters_cfg_label.grid(row = 6, sticky = "nwse")
-        self.parameters_cfg_load.grid(row = 7, sticky = "nwse")
-        self.parameters_cfg_save.grid(sticky = "nwse")
+        self.parameters_img_label.grid(row = 5, sticky = "nwse")
+        self.parameters_img.grid(row = 5, column = 1,sticky = "nwse")
+        self.parameters_ink_label.grid(row = 4, sticky = "nwse")
+        self.parameters_ink.grid(row = 6, column = 1,sticky = "nwse")
+        self.parameters_format_label.grid(row = 7, sticky = "nwse")
+        self.parameters_format.grid(row = 7, column = 1,sticky = "nwse")
+        # self.parameters_cfg_label.grid(row = 8, sticky = "nwse")
+        # self.parameters_cfg_load.grid(row = 9, sticky = "nwse")
+        # self.parameters_cfg_save.grid(sticky = "nwse")
         
         self.status_bar.grid(sticky="nwse")
         self.set_cfg()
     
     @property
     def arguments(self):
-        parameters = f'-il {self.cfg["il"]} --columns {self.cfg["col"]} -tol  {self.cfg["tol"]} --template "{self.cfg["template"]}"'
-        if not self.cfg["format"] == "Template":
-            parameters = f'{parameters}  --format {self.cfg["format"]}'
+        parameters = f'-il {self.cfg["INTERSECTION_LEVEL"]} --columns {self.cfg["COLUMNS"]} -tol  {self.cfg["TOLERANCE"]} --template "{self.cfg["TEMPLATE"]}"'
+        if not self.cfg["FORMAT"] == "Template":
+            parameters = f'{parameters}  --format {self.cfg["FORMAT"]}'
         # # print(parameters)
         self.var_parameters.set(parameters)
         return parameters
     
     def edit_parameters(self):
-        parameters = f'-il {self.cfg["il"]} --columns {self.cfg["col"]} -tol  {self.cfg["tol"]} --template "{self.cfg["template"]}"'
+        parameters = f'-il {self.cfg["INTERSECTION_LEVEL"]} --columns {self.cfg["COLUMNS"]} -tol  {self.cfg["TOLERANCE"]} --template "{self.cfg["TEMPLATE"]}"'
         self.parameters_arguments = list()
-        if not self.cfg["format"] == "Template":
-            parameters = f'{parameters}  --format {self.cfg["format"]}'
-            self.parameters_arguments.append(['--format',self.cfg["format"]])
-        self.parameters_arguments.append(['-il',self.cfg["il"]])
-        self.parameters_arguments.append(['--columns',self.cfg["col"]])
-        self.parameters_arguments.append(['-tol',self.cfg["tol"]])
+        if not self.cfg["FORMAT"] == "Template":
+            parameters = f'{parameters}  --format {self.cfg["FORMAT"]}'
+            self.parameters_arguments.append(['--format',self.cfg["FORMAT"]])
+        self.parameters_arguments.append(['-il',self.cfg["INTERSECTION_LEVEL"]])
+        self.parameters_arguments.append(['--columns',self.cfg["COLUMNS"]])
+        self.parameters_arguments.append(['-tol',self.cfg["TOLERANCE"]])
         
         self.var_parameters.set(parameters)
-        # print("Arguments: ",self.arguments)
+        
+    def get_cfg(self, event = None):
+        if os.path.exists("default_cfg.json"):
+            file = open("default_cfg.json").read()
+            self.configuration_file = json.load(file)
+            self.configuration_file 
         
     def set_cfg(self,event=None):
         if not hasattr(self,"cfg"):
             self.cfg = {}
-        self.cfg["il"] = self.var_il.get()
-        self.cfg["col"] = self.var_col.get()
-        self.cfg["tol"] = self.var_tol.get()
-        self.cfg["template"] = self.var_template.get()
-        self.cfg["format"] = self.var_format.get()
+        self.cfg["INTERSECTION_LEVEL"] = self.var_il.get()
+        self.cfg["COLUMNS"] = self.var_col.get()
+        self.cfg["TOLERANCE"] = self.var_tol.get()
+        self.cfg["TEMPLATE"] = self.var_template.get()
+        self.cfg["FORMAT"] = self.var_format.get()
+        self.cfg["IMAGE"] = self.var_format.get()
+        self.cfg["INK"] = self.var_format.get()
         # print(self.cfg)
         self.edit_parameters()
         
     def set_vars(self):
-        self.var_il.set(self.cfg["il"])
-        self.var_col.set(self.cfg["col"])
-        self.var_tol.set(self.cfg["tol"])
-        self.var_template.set(self.cfg["template"])
-        self.var_format.set(self.cfg["format"])
+        self.var_il.set(self.cfg["INTERSECTION_LEVEL"])
+        self.var_col.set(self.cfg["COLUMNS"])
+        self.var_tol.set(self.cfg["TOLERANCE"])
+        self.var_template.set(self.cfg["TEMPLATE"])
+        self.var_format.set(self.cfg["FORMAT"])
+        self.var_img.set(self.cfg["IMAGE"])
+        self.var_ink.set(self.cfg["INK"])
         self.set_cfg()
         
     def set_new_cfg(self,cfg:dict):
@@ -209,18 +224,29 @@ class gui_pdf_load(gui_interface):
         
     def cfg_validate(self, event = None):
         self.load_templates()
-        if not isinstance(self.cfg["il"],float):
-            self.var_col.set(0.1)
-        if not isinstance(self.cfg["col"],int):
-            self.var_col.set(1)
-        if not isinstance(self.cfg["tol"],float):
-            self.var_tol.set(0.1)
-        if not self.cfg["template"] in self.templates:
-            self.var_template.set("template_html.html")
+        if not isinstance(self.cfg["INTERSECTION_LEVEL"],float):
+            self.var_col.set(self.default_configs["INTERSECTION_LEVEL"])
+        if not isinstance(self.cfg["COLUMNS"],int):
+            self.var_col.set(self.default_configs["TOLERANCE"])
+        if not isinstance(self.cfg["TOLERANCE"],float):
+            self.var_tol.set(self.default_configs["TOLERANCE"])
+        if not self.cfg["TEMPLATE"] in self.templates:
+            self.var_template.set(self.default_configs["DEFAULT_TEMPLATE"])
+        if not self.cfg["IMAGE"] in self.templates:
+            self.var_img.set(self.default_configs["IMAGE"])
+        if not self.cfg["INK"] in self.templates:
+            self.var_ink.set(self.default_configs["INK"])
         self.set_cfg()
+    
+    @property
+    def templates(self):
+        return cli.main(['--list-templates'])
+    
+    @property
+    def default_configs(self):
+        return cli.main(["--list-configs"])
         
     def load_templates(self, event = None):
-        self.templates = cli.main(['--list-templates'])
         self.parameters_template["values"] = self.templates
         
     def load_cfg(self,event = None):
@@ -239,6 +265,7 @@ class gui_pdf_load(gui_interface):
         self.status_bar["text"] = f'Configs saved at: {file_cfg}'
 
     def basic_ui_commmands(self):
+        self.cfg_validate()
         self.btn_file_selector['command'] = self.add_file
         self.btn_remove_all["command"] = self.remove_all
         self.btn_remove_item["command"] = self.remove_file
@@ -246,10 +273,9 @@ class gui_pdf_load(gui_interface):
         
         self.file_list.bind("<Delete>", self.remove_file)
         
-        self.var_il.set(0.1)
-        self.var_col.set(1)
-        self.var_tol.set(0.1)
-        # self.parameters_format.set("Template")
+        # self.var_il.set(self.default_configs["INTERSECTION_LEVEL"])
+        # self.var_col.set(self.default_configs["COLUMNS"])
+        # self.var_tol.set(self.default_configs["TOLERANCE"])
         
         self.parameters_il.bind("<ButtonRelease>", self.cfg_validate)
         self.parameters_tol.bind("<ButtonRelease>", self.cfg_validate)
@@ -269,17 +295,16 @@ class gui_pdf_load(gui_interface):
         self.parameters_template.bind("<Enter>", self.cfg_validate)
         self.parameters_format.bind("<Enter>", self.cfg_validate)
         
-        self.templates = cli.main(['--list-templates'])
         self.configs = cli.main(['--list-configs'])
         
         self.parameters_template["values"] = self.templates
         self.parameters_format["values"] = self.values_format
         
-        self.var_template.set("template_html.html")
+        # self.var_template.set("template_html.html")
 
-        # self.file_list.drop_target_register(DND_FILES)
+        self.file_list.drop_target_register(DND_FILES)
 
-        # self.file_list.dnd_bind("<<Drop>>", self.add_file_drag_drop) 
+        self.file_list.dnd_bind("<<Drop>>", self.add_file_drag_drop) 
         self.set_cfg()
 
     def add_file_drag_drop(self,event):
@@ -304,7 +329,9 @@ class gui_pdf_load(gui_interface):
         self.files = list(self.file_list.get(0,tk.END))
         for i in range(0,len(self.files)):
             self.files[i] = re.sub("\\\\","/",self.files[i])
-            # print(i)
+            extension = str.endswith("PDF",str.upper(self.files[i]))
+            if extension != "PDF":
+                self.files.remove(self.files[i])
         self.files = set(self.files)
         self.files = list(self.files)
 
@@ -356,13 +383,16 @@ class gui_pdf_load(gui_interface):
         self.width = width
         self.height = height
 
-    def pdf_export(self,pdf_location = [], export = 'output/',config_file = ""):
+    def pdf_export(self,pdf_location = [], export = 'output/',config_file = "default_cfg.json"):
         if os.path.exists(export) == False:
             os.mkdir(export)
             
         self.edit_parameters()
         
         for pdf in pdf_location:
+            if not re.match("[.]pdf|[.]PDF",pdf):
+                messagebox.askokcancel(title="Not a PDF file",message=f'{pdf} is not a valid PDF file')
+                next
             
             status = "Making PDF file: " + pdf
             # print(status)
@@ -383,14 +413,16 @@ class gui_pdf_load(gui_interface):
             
             # print("\n\nPDF: ",execution_path)
             
+            argument = input_file + ['-il',f'{self.cfg["INTERSECTION_LEVEL"]}', '-tol',f'{self.cfg["TOLERANCE"]}','--columns',f'{self.cfg["COLUMNS"]}','--template',f'{self.cfg["TEMPLATE"]}']
+            
             if os.path.exists(config_file):
-                argument = input_file + ['-config',config_file]
-                # execution_path = execution_path + ' -config "' + config_file + '" '
-            else:
-                argument = input_file + ['-il',f'{self.cfg["il"]}', '-tol',f'{self.cfg["tol"]}','--columns',f'{self.cfg["col"]}','--template',f'{self.cfg["template"]}']
-                # execution_path = execution_path + self.parameters_entry["text"]
+                argument = argument + ['--config',config_file]
+
             print(argument)
-            cli.main(argument)
+            try:
+                cli.main(argument)
+            except:
+                messagebox.askokcancel(title="Error!",message="Choose a valid file")
 
 
 
@@ -406,6 +438,7 @@ class gui_settings(gui_interface):
         self.basic_ui_draw()
         self.basic_ui_commmands()
         self.selected_items = []
+        self.configuration_file = {}
 
        
     def basic_ui(self):
@@ -417,9 +450,9 @@ class gui_settings(gui_interface):
         
         
         # Config of template tab
-        self.template_tab = tk.Frame(self.ui,highlightbackground="cyan", highlightthickness=2)
-        self.col_1 = tk.Frame(self.template_tab,highlightbackground="blue", highlightthickness=2)
-        self.col_2 = tk.Frame(self.template_tab,highlightbackground="green", highlightthickness=2)
+        self.template_tab = tk.Frame(self.ui)
+        self.col_1 = tk.Frame(self.template_tab)
+        self.col_2 = tk.Frame(self.template_tab)
         self.file_list = tk.Listbox(self.col_1)
         self.btn_add_template = ttk.Button(self.col_1,text="+")
         self.btn_del_template = ttk.Button(self.col_1, text = "-")
@@ -493,31 +526,38 @@ class gui_settings(gui_interface):
         self.file_list.bind("<ButtonRelease>",self.load_template)
         
         self.vertical_bar.config(command = self.temp_text.yview)
-        
-        # self.templates = cli.main(['--list-templates'])
         self.update_templates()
+        
         self.configs = cli.main(['--list-configs'])
         
         for conf in self.configs:
             config = self.configs[conf]
-            print(f'{conf}: {config} - {type(config)}')
             self.config_items[conf] = dict()
             self.config_items[conf]["frame"] = ttk.Frame(self.configs_tab)
             self.config_items[conf]["label"] = ttk.Label(self.config_items[conf]["frame"],text=conf, width=30)
             
-            if isinstance(config, str):
+            if isinstance(config, str) and conf != "DEFAULT_TEMPLATE":
                 self.config_items[conf]["vars"] = tk.StringVar()
-                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60, textvariable=self.config_items[conf]["vars"])
+                self.config_items[conf]["entry"] = ttk.Entry(self.config_items[conf]["frame"], width = 60, textvariable=self.config_items[conf]["vars"])
+            elif isinstance(config, str) and conf == "DEFAULT_TEMPLATE":
+                self.config_items[conf]["vars"] = tk.StringVar()
+                self.config_items[conf]["entry"] = ttk.Combobox(self.config_items[conf]["frame"], width = 60, textvariable=self.config_items[conf]["vars"])
+                self.config_items[conf]["entry"]["values"] = self.templates
             elif isinstance(config,list):
                 self.config_items[conf]["entry"] = tk.Listbox(self.config_items[conf]["frame"],width = 60)
+                self.config_items[conf]["entry"].bind("<Double-1>",self.change_listbox)
+                self.config_items[conf]["entry"].bind("<Return>",self.change_listbox)
             elif isinstance(config,bool):
                 self.config_items[conf]["vars"] = tk.BooleanVar()
                 self.config_items[conf]["entry"] = tk.Checkbutton(self.config_items[conf]["frame"], variable=self.config_items[conf]["vars"])
             elif isinstance(config,float):
                 self.config_items[conf]["vars"] = tk.DoubleVar()
-                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60, textvariable=self.config_items[conf]["vars"])
+                self.config_items[conf]["entry"] = ttk.Spinbox(self.config_items[conf]["frame"], from_ = 0, to = 1,increment=0.05, textvariable=self.config_items[conf]["vars"])
+            elif isinstance(config,int):
+                self.config_items[conf]["vars"] = tk.IntVar()
+                self.config_items[conf]["entry"] = ttk.Spinbox(self.config_items[conf]["frame"], from_ = 1, to = 10, textvariable=self.config_items[conf]["vars"])
             else:
-                self.config_items[conf]["entry"] = tk.Entry(self.config_items[conf]["frame"], width = 60)
+                self.config_items[conf]["entry"] = ttk.Entry(self.config_items[conf]["frame"], width = 60)
             self.config_items[conf]["frame"].grid(sticky="nwse")
             self.config_items[conf]["label"].grid(column = 1,row = 1,sticky="WE")
             self.config_items[conf]["entry"].grid(column = 2,row = 1,sticky="WE")
@@ -539,7 +579,7 @@ class gui_settings(gui_interface):
         for conf in self.configs:
             config = self.configs[conf]
             tk_item = self.config_items[conf]["entry"]
-            if isinstance(tk_item, (tk.Entry)):
+            if isinstance(tk_item, (ttk.Entry)):
                 self.config_items[conf]["vars"].set(config)
             elif isinstance(tk_item, tk.Listbox):
                 self.config_items[conf]["entry"].delete('0','end')
@@ -548,8 +588,11 @@ class gui_settings(gui_interface):
             elif isinstance(tk_item, tk.Checkbutton):
                 self.config_items[conf]["vars"].set(config)
             else:
-                pass
+                self.config_items[conf]["vars"].set(config)
         self.get_config()
+        
+    def change_listbox(self,event = None):
+        pass
                 
     def get_config(self):
         """
@@ -557,12 +600,13 @@ class gui_settings(gui_interface):
         """
         for conf in self.configs:
             tk_item = self.config_items[conf]["entry"]
-            if isinstance(tk_item, (tk.Entry)):
+            if isinstance(tk_item, (ttk.Entry)):
                 self.configs[conf] = self.config_items[conf]["vars"].get()
             elif isinstance(tk_item, tk.Checkbutton):
                 self.configs[conf] = self.config_items[conf]["vars"].get()
             else:
                 self.configs[conf] = self.config_items[conf]["entry"].get(0,'end')
+        self.configuration_file["config"] = self.configs
                 
     def load_config(self,from_file = True):
         """
@@ -570,14 +614,16 @@ class gui_settings(gui_interface):
         """
         if os.path.exists("default_cfg.json") and from_file:
             file = open("default_cfg.json",mode='r',encoding='utf-8')
-            self.configs = json.load(file)
+            self.configuration_file = json.load(file)
+            self.configs = self.configuration_file["config"]
         else:
             self.configs = cli.main(['--list-configs'])
+            self.configuration_file["config"] = self.configs
         # self.set_config()
             
     def save_config(self):
         self.get_config()
-        file = json.dumps(self.configs,ensure_ascii=True,indent=4)
+        file = json.dumps(self.configuration_file,ensure_ascii=True,indent=4)
         with open("default_cfg.json", mode='w', encoding='utf-8') as f:
             f.write(file)
         print("SAVED")
@@ -595,10 +641,12 @@ class gui_settings(gui_interface):
 
         
         # print(self.configs)
+    @property
+    def templates(self):
+        return cli.main(["--list-templates"])
         
             
     def update_templates(self):
-        self.templates = cli.main(['--list-templates'])
         self.file_list.delete(0,"end")
         for i in self.templates:
             self.file_list.insert("end", i)
@@ -690,7 +738,7 @@ class gui_settings(gui_interface):
         file_name = os.path.abspath(name)
         file = open(file_name,mode = 'w',encoding= 'utf-8')
         template = self.temp_text.get(1.0,'end')
-        print(template)
+        # print(template)
         file.write(template)
         file.close()
         
@@ -717,9 +765,4 @@ class gui_settings(gui_interface):
         for item in selected_items:
             # print(item)
             self.file_list.delete(item)
-
-    def set_size(self,width = 500, height = 500):
-        self.width = width
-        self.height = height
-
 
