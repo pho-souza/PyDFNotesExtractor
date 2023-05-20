@@ -257,6 +257,8 @@ def md_export(annotations,title = "Title",template = DEFAULT_TEMPLATE):
     Export the annotation using some jinja template.
     """
     # print(PATH)
+    
+    print(f'LEN HIGHLIGHTS: {len(annotations)}')
 
     md_template = TEMPLATE_ENVIRONMENT.get_template(template)
     retorno = md_template.render(title = title,

@@ -2,7 +2,7 @@
     "config": {
         "DEFAULT_TEMPLATE": "template_html.html",
         "IMG_FOLDER": "img/",
-        "TEMPLATE_FOLDER": "PyDFannots//templates/",
+        "TEMPLATE_FOLDER": "PyDFannots/templates/",
         "DEFAULT_COLOR": [
             1.0,
             1.0,

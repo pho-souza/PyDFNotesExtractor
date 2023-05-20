@@ -2,14 +2,12 @@
 import PyDFannots.pydfannots as pdf_extract
 import PyDFannots.utils as utils
 import typing as typ
-# from importlib import reload
 import json
 import re
 from itertools import chain
 import os
 import pathlib
 import csv
-import sys
 
 import argparse
 
@@ -110,6 +108,9 @@ def parse_args(args) -> typ.Tuple[argparse.Namespace]:
     g.add_argument("--list-configs","-lconfig", default =  False,action="store_true",
                    help = "List all the templates")
     
+    g.add_argument("--count-annotations","-count", default =  False,action="store_true",
+                   help = "Count the number of annotations")
+    
     
     args = p.parse_args(args)
     
@@ -132,11 +133,11 @@ def main(args=None):
     # print(args)
     
     if args.list_templates:
-        print(extractor.templates)
+        # print(extractor.templates)
         return extractor.templates
     
     if args.list_configs:
-        print(extractor.config)
+        # print(extractor.config)
         return extractor.config
     
     if args.input != None and args.output != None:
@@ -208,6 +209,11 @@ def main(args=None):
             extractor.extract_ink(location=export_folder,folder = annex_folder)
 
         highlight = extractor.highlights
+        
+        if args.count_annotations:
+            len_highlight = extractor.count_highlights
+            print(f'This file has {len_highlight} annotations')
+            return len_highlight
         
         if args.format == "json":
             highlight = json.dumps(highlight,ensure_ascii=True,indent=4)

@@ -53,10 +53,10 @@ class config_file:
         default = self.__default["config"]
         
         # Default values
-        project_folder = os.path.relpath(pathlib.Path(__file__).parent)
-        project_folder = re.sub("\\\\","/",project_folder)
+        project_folder = os.path.abspath(pathlib.Path(__file__).parent)
+        # project_folder = re.sub("\\\\","/",project_folder)
         
-        template_folder = project_folder + "//templates/"
+        template_folder = project_folder + "/templates/"
         default.setdefault("DEFAULT_TEMPLATE","template_html.html")
         default.setdefault("IMG_FOLDER","img/")
         default.setdefault("TEMPLATE_FOLDER",template_folder)

@@ -12,7 +12,7 @@ from importlib import reload
 #     pdfannot.cli.main()
 
 # def main() -> None:
-file = "tests/PDF_WIKI.pdf"
+file = "tests/ch2.pdf"
 export_folder = "tests/output/"
 export_file = export_folder+"arquivo.json"
 file_title = re.sub(".*/","",file)
@@ -65,6 +65,7 @@ extractor.extract_ink(location=export_folder)
 highlight = extractor.highlights
 a = json.dumps(highlight,indent=4,ensure_ascii=False)
 
+b = extractor.count_highlights
 
 md_print = utils.md_export(annotations=highlight,title = "",template="template_html.html")
 

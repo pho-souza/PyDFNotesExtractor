@@ -7,6 +7,7 @@ from tkinterdnd2 import DND_FILES
 import pathlib
 
 from PyDFannots.cfg import config_file as config_class
+from PyDFannots.utils import path_normalizer
 
 import os
 import PyDFannots.cli as cli
@@ -42,34 +43,29 @@ class gui_pdf_load(gui_interface):
         
     def set_initial_vars(self):
         self.values_format = ["Template","csv","json"]
-        self.var_format = tk.StringVar()
-        self.var_format.set(self.values_format[0])
         
-        self.var_il = tk.DoubleVar()
-        self.var_il.set(0.1)
-        self.var_col = tk.IntVar()
-        self.var_col.set(1)
-        self.var_tol = tk.DoubleVar()
-        self.var_tol.set(0.1)
-        self.var_template = tk.StringVar()
-        self.var_ink = tk.BooleanVar()
-        self.var_ink.set(True)
-        self.var_img = tk.BooleanVar()
-        self.var_img.set(True)
+        self.vars = {}
+        self.vars["format"] = tk.StringVar()
+        self.vars["format"].set(self.values_format[0])
         
-        self.var_parameters = tk.StringVar()
-        self.var_parameters.set("")
-        # self.set_properties()
+        self.vars["il"] = tk.DoubleVar()
+        self.vars["il"].set(0.1)
+        self.vars["col"] = tk.IntVar()
+        self.vars["col"].set(1)
+        self.vars["tol"] = tk.DoubleVar()
+        self.vars["tol"].set(0.1)
+        self.vars["template"] = tk.StringVar()
+        self.vars["ink"] = tk.BooleanVar()
+        self.vars["ink"].set(True)
+        self.vars["img"] = tk.BooleanVar()
+        self.vars["img"].set(True)
         
-        # self.var_il.trace('w', self.set_cfg)
-        # self.var_col.trace('w', self.set_cfg)
-        # self.var_tol.trace('w', self.set_cfg)
-        # self.var_template.trace('w', self.set_cfg)
-        # self.var_format.trace('w', self.set_cfg)
+        self.vars["parameters"] = tk.StringVar()
+        self.vars["parameters"].set("")
 
     def assets_import(self):
-        self.icon_delete = tk.PhotoImage(file = os.path.abspath(self.__file_location + "//gui_assets//delete.png"))
-        self.icon_trash = tk.PhotoImage(file = os.path.abspath(self.__file_location + "//gui_assets//trash.png"))
+        self.icon_delete = tk.PhotoImage(file = os.path.abspath(self.__file_location + "/gui_assets/delete.png"))
+        self.icon_trash = tk.PhotoImage(file = os.path.abspath(self.__file_location + "/gui_assets/trash.png"))
        
     def basic_ui(self):
         self.row_1 = tk.Frame(self.ui)
@@ -85,26 +81,26 @@ class gui_pdf_load(gui_interface):
         # Grid com atalhos para remover item selecionado ou todos
         self.column_btns = ttk.Frame(self.row_1)
         self.btn_remove_item = ttk.Button(self.column_btns,image=self.icon_delete)
-        self.btn_remove_all = ttk.Button(self.column_btns,image=self.icon_trash)
+        self.btn_remove_all_files = ttk.Button(self.column_btns,image=self.icon_trash)
 
         self.parameters_tab = ttk.Frame(self.row_2)
         self.parameters_label = ttk.Label(self.parameters_tab,text = "Add parameters")
         self.parameters_template_label = ttk.Label(self.parameters_tab,text="Select a template")
-        self.parameters_template = ttk.Combobox(self.parameters_tab,textvariable=self.var_template, state = 'readonly', )
+        self.parameters_template = ttk.Combobox(self.parameters_tab,textvariable=self.vars["template"], state = 'readonly', )
         self.parameters_il_label = ttk.Label(self.parameters_tab,text="Select a intersection level between text and highlights.")
-        self.parameters_il = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.05, state = 'readonly', textvariable=self.var_il)
-        self.parameters_entry = ttk.Label(self.parameters_tab,textvariable=self.var_parameters)
-        self.parameters_col = ttk.Spinbox(self.parameters_tab,from_=1,to=15, increment=1, state = 'readonly', textvariable=self.var_col)
+        self.parameters_il = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.05, state = 'readonly', textvariable=self.vars["il"])
+        self.parameters_entry = ttk.Label(self.parameters_tab,textvariable=self.vars["parameters"])
+        self.parameters_col = ttk.Spinbox(self.parameters_tab,from_=1,to=15, increment=1, state = 'readonly', textvariable=self.vars["col"])
         self.parameters_col_label = ttk.Label(self.parameters_tab,text="Select number of columns in PDF.")
         self.parameters_tol_label = ttk.Label(self.parameters_tab,text="Select tolerance interval for columns")
-        self.parameters_tol = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.05, state = 'readonly', textvariable=self.var_tol)
+        self.parameters_tol = ttk.Spinbox(self.parameters_tab,from_=0,to=1, increment=0.05, state = 'readonly', textvariable=self.vars["tol"])
         self.parameters_img_label = ttk.Label(self.parameters_tab,text="Extract images")
-        self.parameters_img = ttk.Checkbutton(self.parameters_tab, variable=self.var_img)
+        self.parameters_img = ttk.Checkbutton(self.parameters_tab, variable=self.vars["img"])
         self.parameters_ink_label = ttk.Label(self.parameters_tab,text="Extract ink annotations")
-        self.parameters_ink = ttk.Checkbutton(self.parameters_tab, variable=self.var_ink)
+        self.parameters_ink = ttk.Checkbutton(self.parameters_tab, variable=self.vars["ink"])
         # Default format export set to template
         self.parameters_format_label = ttk.Label(self.parameters_tab,text="Select export format.")
-        self.parameters_format = ttk.Combobox(self.parameters_tab,textvariable=self.var_format, state = 'readonly', )
+        self.parameters_format = ttk.Combobox(self.parameters_tab,textvariable=self.vars["format"], state = 'readonly', )
         
         # self.parameters_cfg_label = ttk.Label(self.parameters_tab,text="Load saved config.")
         # self.parameters_cfg_load = ttk.Button(self.parameters_tab,text="Load",command=self.load_cfg)
@@ -129,7 +125,7 @@ class gui_pdf_load(gui_interface):
 
         self.column_btns.grid(column=4,row=1,rowspan=2)
         self.btn_remove_item.grid()
-        self.btn_remove_all.grid()
+        self.btn_remove_all_files.grid()
 
         self.row_1.grid_columnconfigure(1,weight=5)
         self.row_1.grid_columnconfigure(2,weight=5)
@@ -170,7 +166,7 @@ class gui_pdf_load(gui_interface):
         if not self.cfg["FORMAT"] == "Template":
             parameters = f'{parameters}  --format {self.cfg["FORMAT"]}'
         # # print(parameters)
-        self.var_parameters.set(parameters)
+        self.vars["parameters"].set(parameters)
         return parameters
     
     def edit_parameters(self):
@@ -183,35 +179,35 @@ class gui_pdf_load(gui_interface):
         self.parameters_arguments.append(['--columns',self.cfg["COLUMNS"]])
         self.parameters_arguments.append(['-tol',self.cfg["TOLERANCE"]])
         
-        self.var_parameters.set(parameters)
+        self.vars["parameters"].set(parameters)
         
     def get_cfg(self, event = None):
         if os.path.exists("default_cfg.json"):
             file = open("default_cfg.json").read()
             self.configuration_file = json.load(file)
-            self.configuration_file 
+            # self.configuration_file
         
     def set_cfg(self,event=None):
         if not hasattr(self,"cfg"):
             self.cfg = {}
-        self.cfg["INTERSECTION_LEVEL"] = self.var_il.get()
-        self.cfg["COLUMNS"] = self.var_col.get()
-        self.cfg["TOLERANCE"] = self.var_tol.get()
-        self.cfg["TEMPLATE"] = self.var_template.get()
-        self.cfg["FORMAT"] = self.var_format.get()
-        self.cfg["IMAGE"] = self.var_format.get()
-        self.cfg["INK"] = self.var_format.get()
+        self.cfg["INTERSECTION_LEVEL"] = self.vars["il"].get()
+        self.cfg["COLUMNS"] = self.vars["col"].get()
+        self.cfg["TOLERANCE"] = self.vars["tol"].get()
+        self.cfg["TEMPLATE"] = self.vars["template"].get()
+        self.cfg["FORMAT"] = self.vars["format"].get()
+        self.cfg["IMAGE"] = self.vars["format"].get()
+        self.cfg["INK"] = self.vars["format"].get()
         # print(self.cfg)
         self.edit_parameters()
         
     def set_vars(self):
-        self.var_il.set(self.cfg["INTERSECTION_LEVEL"])
-        self.var_col.set(self.cfg["COLUMNS"])
-        self.var_tol.set(self.cfg["TOLERANCE"])
-        self.var_template.set(self.cfg["TEMPLATE"])
-        self.var_format.set(self.cfg["FORMAT"])
-        self.var_img.set(self.cfg["IMAGE"])
-        self.var_ink.set(self.cfg["INK"])
+        self.vars["il"].set(self.cfg["INTERSECTION_LEVEL"])
+        self.vars["col"].set(self.cfg["COLUMNS"])
+        self.vars["tol"].set(self.cfg["TOLERANCE"])
+        self.vars["template"].set(self.cfg["TEMPLATE"])
+        self.vars["format"].set(self.cfg["FORMAT"])
+        self.vars["img"].set(self.cfg["IMAGE"])
+        self.vars["ink"].set(self.cfg["INK"])
         self.set_cfg()
         
     def set_new_cfg(self,cfg:dict):
@@ -225,17 +221,17 @@ class gui_pdf_load(gui_interface):
     def cfg_validate(self, event = None):
         self.load_templates()
         if not isinstance(self.cfg["INTERSECTION_LEVEL"],float):
-            self.var_col.set(self.default_configs["INTERSECTION_LEVEL"])
+            self.vars["col"].set(self.default_configs["INTERSECTION_LEVEL"])
         if not isinstance(self.cfg["COLUMNS"],int):
-            self.var_col.set(self.default_configs["TOLERANCE"])
+            self.vars["col"].set(self.default_configs["TOLERANCE"])
         if not isinstance(self.cfg["TOLERANCE"],float):
-            self.var_tol.set(self.default_configs["TOLERANCE"])
+            self.vars["tol"].set(self.default_configs["TOLERANCE"])
         if not self.cfg["TEMPLATE"] in self.templates:
-            self.var_template.set(self.default_configs["DEFAULT_TEMPLATE"])
+            self.vars["template"].set(self.default_configs["DEFAULT_TEMPLATE"])
         if not self.cfg["IMAGE"] in self.templates:
-            self.var_img.set(self.default_configs["IMAGE"])
+            self.vars["img"].set(self.default_configs["IMAGE"])
         if not self.cfg["INK"] in self.templates:
-            self.var_ink.set(self.default_configs["INK"])
+            self.vars["ink"].set(self.default_configs["INK"])
         self.set_cfg()
     
     @property
@@ -267,15 +263,15 @@ class gui_pdf_load(gui_interface):
     def basic_ui_commmands(self):
         self.cfg_validate()
         self.btn_file_selector['command'] = self.add_file
-        self.btn_remove_all["command"] = self.remove_all
+        self.btn_remove_all_files["command"] = self.remove_all_files
         self.btn_remove_item["command"] = self.remove_file
         self.btn_pdf_export["command"] = self.export_folder
         
         self.file_list.bind("<Delete>", self.remove_file)
         
-        # self.var_il.set(self.default_configs["INTERSECTION_LEVEL"])
-        # self.var_col.set(self.default_configs["COLUMNS"])
-        # self.var_tol.set(self.default_configs["TOLERANCE"])
+        # self.vars["il"].set(self.default_configs["INTERSECTION_LEVEL"])
+        # self.vars["col"].set(self.default_configs["COLUMNS"])
+        # self.vars["tol"].set(self.default_configs["TOLERANCE"])
         
         self.parameters_il.bind("<ButtonRelease>", self.cfg_validate)
         self.parameters_tol.bind("<ButtonRelease>", self.cfg_validate)
@@ -300,11 +296,11 @@ class gui_pdf_load(gui_interface):
         self.parameters_template["values"] = self.templates
         self.parameters_format["values"] = self.values_format
         
-        # self.var_template.set("template_html.html")
+        # self.vars["template"].set("template_html.html")
 
         self.file_list.drop_target_register(DND_FILES)
 
-        self.file_list.dnd_bind("<<Drop>>", self.add_file_drag_drop) 
+        self.file_list.dnd_bind("<<Drop>>", self.add_file_drag_drop)
         self.set_cfg()
 
     def add_file_drag_drop(self,event):
@@ -327,15 +323,16 @@ class gui_pdf_load(gui_interface):
 
     def validate_files(self):
         self.files = list(self.file_list.get(0,tk.END))
-        for i in range(0,len(self.files)):
-            self.files[i] = re.sub("\\\\","/",self.files[i])
-            extension = str.endswith("PDF",str.upper(self.files[i]))
+        for file in self.files:
+            file = path_normalizer(file)
+            extension = re.sub(".*[.](.*)","\\1",str.upper(file))
+            print(extension)
             if extension != "PDF":
-                self.files.remove(self.files[i])
+                self.files.remove(file)
         self.files = set(self.files)
         self.files = list(self.files)
 
-        self.remove_all()
+        self.remove_all_files()
 
         for i in self.files:
             
@@ -370,7 +367,7 @@ class gui_pdf_load(gui_interface):
             self.file_list.insert("end", path)
         self.validate_files()
 
-    def remove_all(self):
+    def remove_all_files(self):
         self.file_list.delete(0,tk.END)
     
     def remove_file(self,event= None):
@@ -390,20 +387,20 @@ class gui_pdf_load(gui_interface):
         self.edit_parameters()
         
         for pdf in pdf_location:
-            if not re.match("[.]pdf|[.]PDF",pdf):
-                messagebox.askokcancel(title="Not a PDF file",message=f'{pdf} is not a valid PDF file')
-                next
+            # if not re.match("[.](pdf|PDF)$",pdf):
+            #     messagebox.showerror(title="Not a PDF file",message=f'{pdf} is not a valid PDF file')
+            #     next(pdf)
             
             status = "Making PDF file: " + pdf
             # print(status)
             self.status_bar["text"] = status
         
 
-            pdf = re.sub("[\\\\]+","/",pdf)
+            pdf = path_normalizer(pdf)
             
             pdf_path = os.path.abspath(pdf)
             
-            pdf_path = re.sub("[\\\\]+","/",pdf_path)
+            pdf_path = path_normalizer(pdf_path)
 
             # print("\n\nPDF location: ",pdf)
             
@@ -412,17 +409,25 @@ class gui_pdf_load(gui_interface):
             #execution_path = execution_path + ' -o "' + export + '" '
             
             # print("\n\nPDF: ",execution_path)
+            argument_count_annots = input_file + ['--count-annotations']
+            
+            print(argument_count_annots)
             
             argument = input_file + ['-il',f'{self.cfg["INTERSECTION_LEVEL"]}', '-tol',f'{self.cfg["TOLERANCE"]}','--columns',f'{self.cfg["COLUMNS"]}','--template',f'{self.cfg["TEMPLATE"]}']
             
             if os.path.exists(config_file):
                 argument = argument + ['--config',config_file]
+                
+            count_annotation = cli.main(argument_count_annots)
+            
+            # print(count_annotation)
 
-            print(argument)
-            try:
+            if count_annotation > 0:
                 cli.main(argument)
-            except:
-                messagebox.askokcancel(title="Error!",message="Choose a valid file")
+            else:
+                messagebox.showerror(title="Error!",message=f"{pdf_path} file don't have annotations.")
+            # except:
+            #     messagebox.showerror(title="Error!",message="Choose a valid file")
 
 
 
@@ -433,12 +438,14 @@ class gui_settings(gui_interface):
     def __init__(self, master = None) -> None:
         self.__master = master
         self.ui = tk.Frame(self.__master)
+        
+        self.configuration_file = {}
 
         self.basic_ui()
         self.basic_ui_draw()
         self.basic_ui_commmands()
         self.selected_items = []
-        self.configuration_file = {}
+        
 
        
     def basic_ui(self):
@@ -462,7 +469,7 @@ class gui_settings(gui_interface):
         # Grid com atalhos para remover item selecionado ou todos
         self.column_btns = ttk.Frame(self.col_1)
         # self.btn_remove_item = ttk.Button(self.column_btns,image=self.icon_delete)
-        # self.btn_remove_all = ttk.Button(self.column_btns,image=self.icon_trash)
+        # self.btn_remove_all_files = ttk.Button(self.column_btns,image=self.icon_trash)
 
         self.parameters_tab = ttk.Frame(self.col_2)
         self.parameters_label = ttk.Label(self.parameters_tab,text = "Adicione parametros")
@@ -757,7 +764,7 @@ class gui_settings(gui_interface):
             
         self.update_templates()
 
-    def remove_all(self):
+    def remove_all_files(self):
         self.file_list.delete(0,tk.END)
     
     def remove_file(self):

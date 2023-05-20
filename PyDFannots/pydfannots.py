@@ -58,7 +58,8 @@ class Note_extractor():
             page_bound = list(page.bound())
             annotations = page.annot_xrefs()
             if not annotations:
-                print("nothing in page ", page_num)
+                pass
+                # print("nothing in page ", page_num)
                 next
             words = page.get_text("words")
             for annot in page.annots():
@@ -95,8 +96,13 @@ class Note_extractor():
                 else:
                     anotacao["color"] = list((0,0,0))
                 self.highlights.append(anotacao)
+            
             self.reorder_columns(columns=1)
             self.get_metadata()
+    
+    @property
+    def count_highlights(self):
+        return len(self.highlights)
     
     def add_config(self, config=""):
         """Add configuration file
@@ -180,11 +186,13 @@ class Note_extractor():
         
         move_path = self.__path_template + "/" + file_name
         
-        move_path = utils.path_normalizer(os.path.abspath(move_path))
+        # move_path = utils.path_normalizer(os.path.abspath(move_path))
+        move_path = os.path.abspath(move_path)
         
-        full_path = utils.path_normalizer(full_path)
+        # full_path = utils.path_normalizer(full_path)
+        full_path = full_path
         
-        print(full_path)
+        # print(full_path)
         
         # full_path = re.sub('\\',"/", full_path)
         
@@ -200,14 +208,16 @@ class Note_extractor():
             name (str): actual template name
             new_name (str): New template name
         """
-        print(type(name))
+        # print(type(name))
         try:
             if name:
-                actual_file = self.__path_template + "//" + name
-                actual_file = utils.path_normalizer(os.path.abspath(actual_file))
+                actual_file = self.__path_template + "/" + name
+                # actual_file = utils.path_normalizer(os.path.abspath(actual_file))
+                actual_file = os.path.abspath(actual_file)
             if new_name:
-                new_file = self.__path_template + "//" + new_name
-                new_file = utils.path_normalizer(os.path.abspath(new_file))
+                new_file = self.__path_template + "/" + new_name
+                # new_file = utils.path_normalizer(os.path.abspath(new_file))
+                new_file = os.path.abspath(new_file)
             if os.path.exists(actual_file):
                 shutil.move(actual_file,new_file)
                 print("File {} renamed to {}".format(actual_file,new_file))
@@ -267,7 +277,7 @@ class Note_extractor():
     def adjust_color(self):
         """
         Convert the RGB color to classified group. This method converts RGB to HSL and convert HSL to categorical
-        color names. The default color é Yellow
+        color names. The default color is Yellow
         """
         for annot in self.highlights:
             color = annot["color"]
@@ -335,23 +345,32 @@ class Note_extractor():
 
                 if not os.path.exists(location):
                     os.mkdir(location)
-                if not os.path.exists(location+"//"+folder):
+                if not os.path.exists(location+"/"+folder):
                     os.mkdir(location+"/"+folder)
+                    
 
                 file = re.sub("(.*/|.*\\\\)","",self.file)
                 file = re.sub("[.]pdf","",file)
+                file = utils.path_normalizer(file)
                 page = page +1
 
                 file_name = file+"_p"+str(page)+'_'+str(annot_number) + ".png"
 
-                file_export = location+"/"+folder+file_name
+                file_export = location+"/"+folder+"/"+file_name
+                # print(file_export)
+                
+                file_export = utils.path_normalizer(os.path.abspath(file_export))
+                folder_export = re.sub("(.*)/.*$","\\1",file_export)
                 # file_export = os.path.dirname(file_export)
-
-
+                
+                
                 # print(pdf_page,' - annotation number: ', annot_number)
 
                 img_folder = folder +  "/" +file_name
+                # img_folder = os.path.abspath(img_folder)
                 img_folder = re.sub("/+","/",img_folder)
+                img_folder = utils.path_normalizer(img_folder)
+                
 
                 img = pdf_page.get_pixmap(clip = clip,dpi = 300)
                 # print(file_export)
@@ -459,20 +478,30 @@ class Note_extractor():
                 clip = fitz.Rect(area.tl, area.br)
                 page_numeration = 'p_' + str(page+1)
 
-                file = re.sub(".*/","",self.file)
+                file = re.sub(".*/|.*\\\\","",self.file)
                 file = re.sub("[.]pdf","",file)
                 page = page +1
 
                 file_name = file+"_p"+str(page)+'_ink' + ".png"
 
-                file_export = location+"/"+folder+file_name
+                file_export = location+"/"+folder+"/"+file_name
+                file_export = os.path.abspath(file_export)
+                file_export = utils.path_normalizer(file_export)
                 file_export = re.sub("/+","/",file_export)
+                
+                folder_export = re.sub("(.*)/.*$","\\1",file_export)
+                # file_export
+                
+                
 
 
                 # print(pdf_page,' - annotation number: ', annot_number)
 
                 img_folder = folder +  "/" +file_name
+                # img_folder = os.path.abspath(img_folder)
+                img_folder = utils.path_normalizer(img_folder)
                 img_folder = re.sub("/+","/",img_folder)
+                
 
                 list_pages[page_numeration] = {"page": page,"clip": clip,"file": file, "file_name": file_name, "file_export": file_export}
 
