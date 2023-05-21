@@ -24,7 +24,7 @@ on:
       - '.gitignore'
       - '.dockerignore'
       - 'spec.json'
-      - 'files.txt
+      - 'files.txt'
 
 jobs:
   build:
