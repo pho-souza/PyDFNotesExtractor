@@ -1,11 +1,11 @@
 # PyDFNotesExtractor
 
 This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
-Information about config file, templates and more [here](https://github.com/pho-souza/PyDFannots/blob/main/doc/README.MD)
+Information about config file,  templates and more [here](https://github.com/pho-souza/PyDFannots/blob/main/doc/README.MD)
 
 -----------
 
-To install, use the command:
+To install,  use the command:
 ``python setup.py install``
 
 # Usage
@@ -24,32 +24,36 @@ Required arguments to extraction:
 * <output>  Path to output in format selected by user.
 
 Flags:
-    -h, --help Show context-sensitive help.
-    -v, --version   Display current version of pydfannots.
-    -ac, --adjust-color Classify colors from annotations. 
-    -at, --adjust-text  Adjust text to eliminate hyphens and linebreaks.
-    -ad, --adjust-date Adjust date to the format YYYY-MM-DD HH:mm:SS
-    -c, --columns   Number of columns of file. Default value: 1
-    -tol, --tolerance   Tolerance interval for columns width in percentage of total width. Default is 0.1
-    -rg, --reorder-group    Reorder annotations using some criteria.
-    -img, --image   Extract rectangle annotation as image.
-    -ink, --ink-annotation  Extract ink anotations as image.
-    -temp, --template   Select a jinja2 template. Default set to PyDFannots/templates/template_html.html.
-    -il, --intersection_level   Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.
-    -f, --format    Format to export file. Default set to "". Support to json and csv.
-    -il, --intersection-level   Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.
-    -it, --import-template  Local templates to be imported into program folder.
-    -dt, --delete-template Templates to be removed from templates folder.
-    -cfg, --config  User defined default configs.
+    -h,  --help Show context-sensitive help.
+    -v,  --version   Display current version of pydfannots.
+    -ac,  --adjust-color Classify colors from annotations. 
+    -at,  --adjust-text  Adjust text to eliminate hyphens and linebreaks.
+    -ad,  --adjust-date Adjust date to the format YYYY-MM-DD HH:mm:SS
+    -c,  --columns   Number of columns of file. Default value: 1
+    -tol,  --tolerance   Tolerance interval for columns width in percentage of total width. Default is 0.1
+    -rg,  --reorder-group    Reorder annotations using some criteria.
+    -img,  --image   Extract rectangle annotation as image.
+    -ink,  --ink-annotation  Extract ink anotations as image.
+    -temp,  --template   Select a jinja2 template. Default set to PyDFannots/templates/template_html.html.
+    -il,  --intersection_level   Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.
+    -f,  --format    Format to export file. Default set to "". Support to json and csv.
+    -il,  --intersection-level   Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.
+    -it,  --import-template  Local templates to be imported into program folder.
+    -dt,  --delete-template Templates to be removed from templates folder.
+    -re,  --rename-template name new_name,  -rt name new_name  Change name.
+    -cfg,  --config  User defined default configs.
+    -ltemp,  --list-templates List all the templates
+    -lconfig,  --list-config List the configs of the program
+    -count,  --count-annotations Count the number of annotations.
 
--ad, -at, -at, -ink and -img are set True by default. If you want to disable some o them, use the flags:
+-ad,  -at,  -at,  -ink and -img are set True by default. If you want to disable some o them,  use the flags:
 
 Negative flags:
-    -nad, --no-adjust-date  Disable -ad flag.
-    -nat, --no-adjust-text  Disable -at flag.
-    -nac, --no-adjust-color  Disable -ac flag.
-    -nink, --no-ink-annotation  Disable -ink flag.
-    -nimg, --no-image  Disable -img flag.
+    -nad,  --no-adjust-date  Disable -ad flag.
+    -nat,  --no-adjust-text  Disable -at flag.
+    -nac,  --no-adjust-color  Disable -ac flag.
+    -nink,  --no-ink-annotation  Disable -ink flag.
+    -nimg,  --no-image  Disable -img flag.
 
 ```
 

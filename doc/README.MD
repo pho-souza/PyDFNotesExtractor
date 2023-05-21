@@ -1,3 +1,3 @@
-## PyDFannots
+# PyDFannots
 
 - [Templates](Templates.md)

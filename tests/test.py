@@ -12,11 +12,11 @@ from importlib import reload
 #     pdfannot.cli.main()
 
 # def main() -> None:
-file = "tests/ch2.pdf"
+file = "tests/PDF_WIKI.pdf"
 export_folder = "tests/output/"
 export_file = export_folder+"arquivo.json"
-file_title = re.sub(".*/","",file)
-file_title = re.sub("[.].pdf","",file_title)
+file_title = re.sub(".*/", "", file)
+file_title = re.sub("[.].pdf", "", file_title)
 
 html_export = export_folder + "/" + file_title + ".html"
 
@@ -26,15 +26,17 @@ utils.path_normalizer(path)
 
 reload(cfg)
 
-config = cfg.config_file()
-# config = cfg.config_file(cfg_file="default_cfg.json")
+config = cfg.Config_file()
+# config = cfg.Config_file(cfg_file="default_cfg.json")
 config.config
 
 config.save("default_cfg.json")
 
 reload(pydfannots)
 
-extractor = pydfannots.Note_extractor(file)
+extractor = pydfannots.NoteExtractor(file)
+
+extractor.count_highlights
 
 extractor.add_config("tests/user_cfg.json")
 
@@ -45,7 +47,7 @@ extractor.import_template("tests/temp.txt")
 
 extractor.templates
 
-extractor.rename_template("temp.txt","templ2.txt")
+extractor.rename_template("temp.txt", "templ2.txt")
 
 extractor.templates
 
@@ -57,21 +59,21 @@ extractor.adjust_color()
 extractor.adjust_date()
 extractor.adjust_text()
 
-# extractor.reorder_custom(criteria=["page"],ordenation='asc')
-extractor.reorder_columns(columns=1,tolerance=0)
+# extractor.reorder_custom(criteria=["page"], ordenation='asc')
+extractor.reorder_columns(columns=1, tolerance=0)
 extractor.extract_image(location=export_folder)
 extractor.extract_ink(location=export_folder)
 
 highlight = extractor.highlights
-a = json.dumps(highlight,indent=4,ensure_ascii=False)
+a = json.dumps(highlight, indent=4, ensure_ascii=False)
 
 b = extractor.count_highlights
 
-md_print = utils.md_export(annotations=highlight,title = "",template="template_html.html")
+md_print = utils.md_export(annotations=highlight, title = "", template="template_html.html")
 
-with open(html_export,'w', encoding='utf-8') as f:
+with open(html_export, 'w',  encoding='utf-8') as f:
     f.write(md_print)
 
 
-with open(export_file, "w",encoding='utf-8') as outfile:
+with open(export_file,  "w", encoding='utf-8') as outfile:
     outfile.write(a)

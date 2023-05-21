@@ -1,5 +1,5 @@
-init:
-	pip install -r requirements.txt
+nit:
+pip install -r requirements.txt
 
-test:
-	py.test tests
+est:
+py.test tests
