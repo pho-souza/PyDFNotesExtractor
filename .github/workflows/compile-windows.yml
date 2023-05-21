@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "v*.*.*"
+      - "*.*.*"
 
     # Don't trigger if it's just a documentation update
     paths-ignore:
@@ -45,14 +45,21 @@ jobs:
           python setup.py build_binary
       - name: upload build
         uses: actions/upload-artifact@v3
+        env:
+          EXECUTABLE: pydfannots_windows
         with:
-          name: windows-build
-          path: ./dist/*
+          name: $EXECUTABLE
+          path: './dist/*'
+      - name: Print files
+        run: |
+          echo %cd%
+          dir dist
+        env:
+          win_file: 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          prerelease: true
           generate_release_notes: true
           files: |
             dist/*

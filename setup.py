@@ -36,7 +36,6 @@ class BuildBinaryCommand(distutils.cmd.Command):
     
     # noinspection PyShadowingNames
     def run(self):
-        VERSION = __version__
         if sys.platform == 'darwin':
             with open(OSX_INFO_PLIST, 'r') as file:
                 filedata = file.read()
