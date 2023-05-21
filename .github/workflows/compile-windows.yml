@@ -45,21 +45,17 @@ jobs:
           python setup.py build_binary
       - name: upload build
         uses: actions/upload-artifact@v3
-        env:
-          EXECUTABLE: pydfannots_windows
         with:
-          name: $EXECUTABLE
+          name: windows_executable
           path: './dist/*'
       - name: Print files
         run: |
           echo %cd%
           dir dist
-        env:
-          win_file: 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           generate_release_notes: true
           files: |
-            dist/*
+            *win*
