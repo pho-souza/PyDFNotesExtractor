@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-pip/pyinstaller build script for KCC.
+pip/pyinstaller build script for PyDFannots.
 
 Install as Python package:
     python3 setup.py install
@@ -27,18 +27,17 @@ VERSION = __version__
 class BuildBinaryCommand(distutils.cmd.Command):
     description = 'build binary release'
     user_options = []
-
+    
     def initialize_options(self):
         pass
-
+    
     def finalize_options(self):
         pass
-
+    
     # noinspection PyShadowingNames
     def run(self):
         VERSION = __version__
         if sys.platform == 'darwin':
-
             with open(OSX_INFO_PLIST, 'r') as file:
                 filedata = file.read()
             filedata = filedata.replace('5.5.2', VERSION)
@@ -130,10 +129,11 @@ setuptools.setup(
             'pydfannots=PyDFannots.gui:main',
         ],
     },
-    packages=['pydfannots','pydfannotsgui'],
+    packages=['pydfannots'],
     install_requires=[
         'PyMuPDF>=1.21.1',
         'tkinterdnd2',
+        'Jinja2'
     ],
     classifiers=[],
     zip_safe=False,
