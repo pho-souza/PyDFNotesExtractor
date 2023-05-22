@@ -28,7 +28,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -40,23 +40,29 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel pyinstaller
           pip install -r requirements.txt
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install -g appdmg
       - name: build binary
         run: |
           python setup.py build_binary
       - name: upload build
         uses: actions/upload-artifact@v3
         with:
-          name: windows_executable
-          path: './dist/*'
+          name: mac-os-build
+          path: dist/*.dmg
       - name: Print files
         run: |
           echo %cd%
           dir dist
       - name: Release
         uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
+          prerelease: true
           generate_release_notes: true
           files: |
             CHANGELOG.md
             LICENSE.txt
-            dist/*.exe
+            dist/*.dmg
