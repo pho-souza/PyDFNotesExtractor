@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: windows_executable
-          path: './dist/*'
+          path: './dist/PyDFAnnots_win*'
       - name: Print files
         run: |
           echo %cd%
@@ -57,3 +57,8 @@ jobs:
         with:
           prerelease: true
           generate_release_notes: true
+          files: |
+            dist/PyDFAnnots_win/*.exe
+            dist/PyDFAnnots_win/PyDFannots/gui_assets/*
+            dist/PyDFAnnots_win/PyDFannots/templates/css/*
+            dist/PyDFAnnots_win/PyDFannots/templates/*

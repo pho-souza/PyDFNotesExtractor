@@ -29,22 +29,22 @@ jobs:
         uses: JackMcKew/pyinstaller-action-windows@main
         with:
           path: .
-          spec: ./pydfannotsgui.spec
+          spec: ./pydfannots.spec
       - name: Package Application
         uses: JackMcKew/pyinstaller-action-windows@main
         with:
           path: .
-          spec: ./pydfannots.spec
+          spec: ./pydfannotsgui.spec
       - name: rename binaries
         run: |   
-          version_built=$(cat PyDFannots/__init__.py | grep version | awk '{print $3}' | sed "s/[^.0-9b]//g")
-          mv dist/windows/pydfannotsgui.exe dist/windows/pydfannotsgui_${version_built}.exe 
-          mv dist/windows/pydfannots.exe dist/windows/pydfannots_${version_built}.exe 
+          version_built=$(cat kindlecomicconverter/__init__.py | grep version | awk '{print $3}' | sed "s/[^.0-9b]//g")
+          mv dist/PyDFAnnots_win/pydfannots.exe dist/PyDFAnnots_win/pydfannots_${version_built}.exe 
+          mv dist/PyDFAnnots_win/pydfannotsgui.exe dist/PyDFAnnots_win/pydfannotsgui_${version_built}.exe 
       - name: upload build
         uses: actions/upload-artifact@v3
         with:
           name: windows-build
-          path: dist/windows/*.exe
+          path: dist/PyDFAnnots_win/*.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -54,4 +54,4 @@ jobs:
           files: |
             CHANGELOG.md
             LICENSE.txt
-            dist/windows/*.exe
+            dist/PyDFAnnots_win/*.exe
