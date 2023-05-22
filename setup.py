@@ -58,7 +58,7 @@ class BuildBinaryCommand(distutils.cmd.Command):
         elif sys.platform == 'win32':
             # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "PyDFAnnots GUI" --ascii --clean --add-data "PyDFannots/gui_assets/;PyDFannots/gui_assets/" --add-data "PyDFannots/templates;PyDFannots/templates/" --additional-hooks-dir "."  "PyDFannots-gui.py"'
             command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --ascii --clean  "PyDFannots.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "PyDFannots.py"'
             # command_cli = 'pyinstaller --noconfirm --onedir --noupx --name "PyDFAnnots" --ascii --clean --add-data "PyDFannots/templates;PyDFannots/templates/"  "PyDFannots.py"'
             # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
@@ -78,7 +78,7 @@ class BuildBinaryCommand(distutils.cmd.Command):
             exit(0)
         elif sys.platform == 'linux':
             command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui_linux" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots_linux" --ascii --clean  "PyDFannots.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots_linux" --ascii --noupx --clean  "PyDFannots.py"'
             # # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
