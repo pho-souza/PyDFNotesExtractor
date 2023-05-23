@@ -64,6 +64,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
             os.system(command_gui)
             os.system(command_cli)
             os.makedirs(f'dist/PyDFAnnots_win', exist_ok=True)
+            if os.path.exists(f'dist/PyDFAnnots_win'):
+                shutil.rmtree(f'dist/PyDFAnnots_win')
             os.makedirs(f'dist/PyDFAnnots_win/PyDFannots', exist_ok=True)
             shutil.move(f'dist/pydfannots.exe',f'dist/PyDFAnnots_win/pydfannots.exe')
             shutil.move(f'dist/pydfannotsgui.exe',f'dist/PyDFAnnots_win/pydfannotsgui_win.exe')
@@ -82,7 +84,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
             # # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
-            print(f"NOME \n\n\n\n\n f'dist/PyDFAnnots_linux' \n\n\n\n\n\n\n")
+            print(f"NOME \n\n\n\n\n f'dist/pydfannots_linux' \n\n\n\n\n\n\n")
+            os.makedirs(f'dist/PyDFAnnots_linux', exist_ok=True)
             if os.path.exists(f'dist/PyDFAnnots_linux'):
                 shutil.rmtree(f'dist/PyDFAnnots_linux')
             os.makedirs(f'dist/PyDFAnnots_linux', exist_ok=True)

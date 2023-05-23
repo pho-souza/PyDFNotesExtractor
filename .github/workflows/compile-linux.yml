@@ -1,6 +1,6 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: build PyDF Annots - GUI for windows
+name: build PyDF Annots - GUI for Linux
 
 on:
   workflow_dispatch:
@@ -38,11 +38,11 @@ jobs:
           cache: 'pip'
       - name: Install python dependencies
         run: |
-          python -m pip install --upgrade pip setuptools wheel pyinstaller
+          python3 -m pip install --upgrade pip setuptools wheel pyinstaller
           pip install -r requirements.txt
       - name: build binary
         run: |
-          python setup.py build_binary
+          python3 setup.py build_binary
       - name: Tar.gz folder
         run: |
           tar -czvf dist/PyDFAnnots_linux.tar.gz dist/PyDFAnnots_linux
@@ -55,10 +55,15 @@ jobs:
         run: |
           echo %cd%
           dir dist
-      - name: Release
-        uses: softprops/action-gh-release@v1
+    #   - name: Release
+    #     uses: softprops/action-gh-release@v1
+    #     with:
+    #       prerelease: true
+    #       generate_release_notes: true
+    #       files: |
+    #         dist/PyDFAnnots_linux.tar.gz
+      - name: Archive release
+        uses: thedoctor0/zip-release@0.7.1
         with:
-          prerelease: true
-          generate_release_notes: true
-          files: |
-            dist/PyDFAnnots_linux.tar.gz
+          type: 'zip'
+          filename: 'pydfannots_windows.zip'
