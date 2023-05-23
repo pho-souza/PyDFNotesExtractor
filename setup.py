@@ -42,15 +42,15 @@ class BuildBinaryCommand(distutils.cmd.Command):
             filedata = filedata.replace('5.5.2', VERSION)
             with open(OSX_INFO_PLIST, 'w') as file:
                 file.write(filedata)
+                
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "PyDFannots.py"'
 
-            os.system('pyinstaller -y -F -i PyDFannots/gui_assets/icon.ico -n "PyDF Annots GUI" -w -s "pydfannots-gui.py"')
-            os.makedirs('dist/PyDFAnnots.app/Contents/Resources/Codecs')
-            shutil.copy('other/osx/7z', 'dist/PyDFAnnots.app/Contents/Resources')
-            shutil.copy('other/osx/7z.so', 'dist/PyDFAnnots.app/Contents/Resources')
-            shutil.copy('other/osx/Rar.so', 'dist/PyDFAnnots.app/Contents/Resources/Codecs')
-            shutil.copy('other/osx/Info.plist', 'dist/PyDFAnnots.app/Contents')
+            os.system(command_gui)
+            if os.path.exists(f'dist/PyDFAnnots.app/Contents/Resources'):
+                shutil.rmtree(f'dist/PyDFAnnots.app/Contents/Resources')
+            os.makedirs('dist/PyDFAnnots.app/Contents/Resources')
             shutil.copy('LICENSE.txt', 'dist/PyDFAnnots.app/Contents/Resources')
-            shutil.copy('other/windows/Additional-LICENSE.txt', 'dist/PyDFAnnots.app/Contents/Resources')
             # os.chmod('dist/PyDFAnnots.app/Contents/Resources/7z', 0o777)
             # TODO /usr/bin/codesign --force -s "$MACOS_CERTIFICATE_NAME" --options runtime dist/Applications/Kindle\ Comic\ Converter.app -v
             # os.system('appdmg kcc.json dist/KindleComicConverter_osx_' + VERSION + '.dmg')
@@ -63,7 +63,6 @@ class BuildBinaryCommand(distutils.cmd.Command):
             # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
-            os.makedirs(f'dist/PyDFAnnots_win', exist_ok=True)
             if os.path.exists(f'dist/PyDFAnnots_win'):
                 shutil.rmtree(f'dist/PyDFAnnots_win')
             os.makedirs(f'dist/PyDFAnnots_win/PyDFannots', exist_ok=True)
@@ -79,13 +78,12 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 pass
             exit(0)
         elif sys.platform == 'linux':
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui_linux" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots_linux" --ascii --noupx --clean  "PyDFannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "PyDFannots.py"'
             # # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
             print(f"NOME \n\n\n\n\n f'dist/pydfannots_linux' \n\n\n\n\n\n\n")
-            os.makedirs(f'dist/PyDFAnnots_linux', exist_ok=True)
             if os.path.exists(f'dist/PyDFAnnots_linux'):
                 shutil.rmtree(f'dist/PyDFAnnots_linux')
             os.makedirs(f'dist/PyDFAnnots_linux', exist_ok=True)
