@@ -78,23 +78,23 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 pass
             exit(0)
         elif sys.platform == 'linux':
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "PyDFannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "./PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "./PyDFannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "./PyDFannots.py"'
             # # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
-            if os.path.exists(f'dist/PyDFAnnots_linux'):
-                shutil.rmtree(f'dist/PyDFAnnots_linux')
-            os.makedirs(f'dist/PyDFAnnots_linux', exist_ok=True)
-            shutil.move(f'dist/pydfannots',f'dist/PyDFAnnots_linux/pydfannots_linux')
-            shutil.move(f'dist/pydfannotsgui',f'dist/PyDFAnnots_linux/pydfannotsgui_linux')
-            os.makedirs(f'dist/PyDFAnnots_linux/PyDFannots', exist_ok=True)
+            if os.path.exists(f'./dist/PyDFAnnots_linux'):
+                shutil.rmtree(f'./dist/PyDFAnnots_linux')
+            os.makedirs(f'./dist/PyDFAnnots_linux', exist_ok=True)
+            shutil.move(f'./dist/pydfannots',f'./dist/PyDFAnnots_linux/pydfannots_linux')
+            shutil.move(f'./dist/pydfannotsgui',f'./dist/PyDFAnnots_linux/pydfannotsgui_linux')
+            os.makedirs(f'./dist/PyDFAnnots_linux/PyDFannots', exist_ok=True)
             try:
-                shutil.copytree(f'PyDFannots/gui_assets', f'dist/PyDFAnnots_linux/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree('./PyDFannots/gui_assets', './dist/PyDFAnnots_linux/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             try:
-                shutil.copytree(f'PyDFannots/templates', f'dist/PyDFAnnots_linux/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree('./PyDFannots/templates', './dist/PyDFAnnots_linux/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             

@@ -43,6 +43,19 @@ jobs:
       - name: build binary
         run: |
           python3 setup.py build_binary
+      - name: Show ls content
+        run: |
+          echo ls -a
+          ls -a
+          echo ==========
+          echo ls . -a
+          ls . -a
+          echo ==========
+          echo ls dist/ -a
+          ls dist/ -a
+          echo ==========
+          echo ls dist/ -a
+          ls ./dist/ -a
       - name: Tar.gz folder
         run: |
           tar -czvf dist/PyDFAnnots_linux.tar.gz dist/PyDFAnnots_linux
