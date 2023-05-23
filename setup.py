@@ -83,12 +83,11 @@ class BuildBinaryCommand(distutils.cmd.Command):
             # # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
-            print(f"NOME \n\n\n\n\n f'dist/pydfannots_linux' \n\n\n\n\n\n\n")
             if os.path.exists(f'dist/PyDFAnnots_linux'):
                 shutil.rmtree(f'dist/PyDFAnnots_linux')
             os.makedirs(f'dist/PyDFAnnots_linux', exist_ok=True)
-            shutil.move(f'dist/pydfannots_linux',f'dist/PyDFAnnots_linux/pydfannots_linux')
-            shutil.move(f'dist/pydfannotsgui_linux',f'dist/PyDFAnnots_linux/pydfannotsgui_linux')
+            shutil.move(f'dist/pydfannots',f'dist/PyDFAnnots_linux/pydfannots_linux')
+            shutil.move(f'dist/pydfannotsgui',f'dist/PyDFAnnots_linux/pydfannotsgui_linux')
             os.makedirs(f'dist/PyDFAnnots_linux/PyDFannots', exist_ok=True)
             try:
                 shutil.copytree(f'PyDFannots/gui_assets', f'dist/PyDFAnnots_linux/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
