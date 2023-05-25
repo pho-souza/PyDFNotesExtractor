@@ -78,4 +78,4 @@ jobs:
           prerelease: true
           generate_release_notes: true
           files: |
-            dist/PyDFAnnots_linux.tar.gz
+            dist/pydfannots_linux.tar.gz
