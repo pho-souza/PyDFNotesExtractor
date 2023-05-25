@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """GUI for PyDFannots
 """
 import tkinter as tk

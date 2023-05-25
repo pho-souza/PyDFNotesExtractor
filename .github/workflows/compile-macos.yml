@@ -71,26 +71,28 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel pyinstaller certifi pillow
           pip install -r requirements.txt
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm install -g appdmg
       - name: build binary
         run: |
           python setup.py build_binary
+      - name: setup permissions
+        run: |
+          chmod +x dist/pydfannots_osx/pydfannots_osx
+          chmod +x dist/pydfannots_osx/pydfannotsgui_osx
+      - name: Tar.gz folder
+        run: |
+          zip dist/pydfannots_osx.zip dist/pydfannots_osx
       - name: upload build
         uses: actions/upload-artifact@v3
         with:
-          name: mac-os-build
-          path: dist/*.dmg
+          name: osx zipped
+          path: './dist/pydfannots_osx.zip'
       - name: Print files
         run: |
-          ls -a dist/ 
+          ls -a dist/
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           prerelease: true
           generate_release_notes: true
           files: |
-            dist/pydfannots_osx.dmg
+            dist/pydfannots_osx.zip

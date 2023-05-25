@@ -17,7 +17,7 @@ import setuptools
 import distutils.cmd
 from PyDFannots import __version__
 
-# OSX_INFO_PLIST = "other/osx/Info.plist"
+OSX_INFO_PLIST = "configs/osx/Info.plist"
 
 NAME = 'PyDFannots'
 MAIN = 'pydfannots.py'
@@ -37,24 +37,43 @@ class BuildBinaryCommand(distutils.cmd.Command):
     # noinspection PyShadowingNames
     def run(self):
         if sys.platform == 'darwin':
-            # with open(OSX_INFO_PLIST, 'r') as file:
-            #     filedata = file.read()
-            # filedata = filedata.replace('5.5.2', VERSION)
-            # with open(OSX_INFO_PLIST, 'w') as file:
-            #     file.write(filedata)
+            with open(OSX_INFO_PLIST, 'r') as file:
+                filedata = file.read()
+                filedata = filedata.replace('5.5.2', VERSION)
+            with open(OSX_INFO_PLIST, 'w') as file:
+                file.write(filedata)
                 
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.icns" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
             command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
 
             os.system(command_gui)
-            if os.path.exists(f'dist/pydfannots.app/Contents/Resources'):
-                shutil.rmtree(f'dist/pydfannots.app/Contents/Resources')
-            os.makedirs('dist/pydfannots.app/Contents/Resources')
-            shutil.copy('LICENSE', 'dist/pydfannots.app/Contents/Resources')
+            if os.path.exists(f'dist/pydfannots_osx'):
+                shutil.rmtree(f'dist/pydfannots_osx')
+            os.makedirs(f'dist/pydfannots_osx', exist_ok=True)
+            shutil.move(f'dist/pydfannots',f'dist/pydfannots_osx/pydfannots_osx')
+            shutil.move(f'dist/pydfannotsgui',f'dist/pydfannots_osx/pydfannotsgui_osx')
+            os.makedirs(f'dist/pydfannots_osx/PyDFannots', exist_ok=True)
+            try:
+                shutil.copytree(f'PyDFannots/gui_assets', f'dist/pydfannots_osx/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+            except:
+                pass
+            try:
+                shutil.copytree(f'PyDFannots/templates', f'dist/pydfannots_osx/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+            except:
+                pass
             # os.chmod('dist/PyDFAnnots.app/Contents/Resources/7z', 0o777)
             # TODO /usr/bin/codesign --force -s "$MACOS_CERTIFICATE_NAME" --options runtime dist/Applications/Kindle\ Comic\ Converter.app -v
-            os.system('appdmg pydfannots.json dist/pydfannots' + "_osx" + '.dmg')
+            # os.system('appdmg pydfannots.json dist/pydfannots' + "_osx" + '.dmg')
             exit(0)
+        elif sys.platform == 'darwin_future_test':
+            APP = ['pydfannots-gui.py']
+            OPTIONS = {
+                'argv_emulation': True
+            }
+            setuptools.setup(
+                app = APP,
+                options = {'py2app': OPTIONS},
+                setup_requires = ['py2app'])
         elif sys.platform == 'win32':
             # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "PyDFAnnots GUI" --ascii --clean --add-data "PyDFannots/gui_assets/;PyDFannots/gui_assets/" --add-data "PyDFannots/templates;PyDFannots/templates/" --additional-hooks-dir "."  "PyDFannots-gui.py"'
             command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
