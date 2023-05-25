@@ -53,7 +53,7 @@ class BuildBinaryCommand(distutils.cmd.Command):
             shutil.copy('LICENSE', 'dist/pydfannots.app/Contents/Resources')
             # os.chmod('dist/PyDFAnnots.app/Contents/Resources/7z', 0o777)
             # TODO /usr/bin/codesign --force -s "$MACOS_CERTIFICATE_NAME" --options runtime dist/Applications/Kindle\ Comic\ Converter.app -v
-            # os.system('appdmg kcc.json dist/KindleComicConverter_osx_' + VERSION + '.dmg')
+            os.system('appdmg pydfannots.json dist/pydfannots' + "_osx" + '.dmg')
             exit(0)
         elif sys.platform == 'win32':
             # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "PyDFAnnots GUI" --ascii --clean --add-data "PyDFannots/gui_assets/;PyDFannots/gui_assets/" --add-data "PyDFannots/templates;PyDFannots/templates/" --additional-hooks-dir "."  "PyDFannots-gui.py"'

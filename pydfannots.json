@@ -1,0 +1,9 @@
+{
+  "title": "PyDF Annotatios",
+  "icon": "PyDFannots/gui_assets/logo.icns",
+  "icon-size": 66,
+  "contents": [
+    { "x": 180, "y": 300, "type": "file", "path": "dist/pydfannots.app" },
+    { "x": 520, "y": 300, "type": "link", "path": "/Applications" }
+  ]
+}
