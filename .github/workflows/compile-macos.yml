@@ -81,7 +81,7 @@ jobs:
       - name: Tar.gz folder
         run: |
           cd dist/
-          zip pydfannots_osx.zip pydfannots_osx/
+          zip -r pydfannots_osx.zip pydfannots_osx
           cd ..
       - name: upload build
         uses: actions/upload-artifact@v3
