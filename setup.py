@@ -47,6 +47,7 @@ class BuildBinaryCommand(distutils.cmd.Command):
             command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
 
             os.system(command_gui)
+            os.system(command_cli)
             if os.path.exists(f'dist/pydfannots_osx'):
                 shutil.rmtree(f'dist/pydfannots_osx')
             os.makedirs(f'dist/pydfannots_osx', exist_ok=True)
