@@ -59,8 +59,8 @@ jobs:
           python3 setup.py build_binary
       - name: setup permissions
         run: |
-          chmod +x './PyDFAnnots_linux/pydfannots_linux
-          chmod +x './PyDFAnnots_linux/pydfannotsgui_linux
+          chmod +x './dist/PyDFAnnots_linux/pydfannots_linux
+          chmod +x './dist/PyDFAnnots_linux/pydfannotsgui_linux
       - name: Tar.gz folder
         run: |
           tar -czvf dist/PyDFAnnots_linux.tar.gz dist/PyDFAnnots_linux
@@ -71,8 +71,7 @@ jobs:
           path: './dist/PyDFAnnots_linux.tar.gz'
       - name: Print files
         run: |
-          echo %cd%
-          dir dist
+          ls -a dist/
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
