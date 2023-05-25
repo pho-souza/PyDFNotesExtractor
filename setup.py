@@ -90,11 +90,11 @@ class BuildBinaryCommand(distutils.cmd.Command):
             shutil.move(f'dist/pydfannotsgui',f'dist/pydfannots_linux/pydfannotsgui_linux')
             os.makedirs(f'dist/pydfannots_linux/PyDFannots', exist_ok=True)
             try:
-                shutil.copytree('./PyDFannots/gui_assets', './dist/PyDFAnnots_linux/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree('./PyDFannots/gui_assets', './dist/pydfannots_linux/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             try:
-                shutil.copytree('./PyDFannots/templates', './dist/PyDFAnnots_linux/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree('./PyDFannots/templates', './dist/pydfannots_linux/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             

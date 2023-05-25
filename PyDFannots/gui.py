@@ -38,7 +38,7 @@ def main():
     pdf_settings = gui.gui_settings(notebook)
 
 
-    root.state('zoomed')
+    #root.state('zoomed')
 
     notebook.grid(sticky = "nsew")
 
@@ -57,6 +57,10 @@ def main():
     root.iconphoto(False,  logo)
 
     root.title("PyDFannots-GUI")
+
+    root.style = ttk.Style()
+
+    root.style.theme_use("clam")
 
     root.mainloop()
 
