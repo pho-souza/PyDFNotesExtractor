@@ -43,8 +43,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
             with open(OSX_INFO_PLIST, 'w') as file:
                 file.write(filedata)
                 
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "PyDFannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
 
             os.system(command_gui)
             if os.path.exists(f'dist/PyDFAnnots.app/Contents/Resources'):
@@ -57,8 +57,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
             exit(0)
         elif sys.platform == 'win32':
             # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "PyDFAnnots GUI" --ascii --clean --add-data "PyDFannots/gui_assets/;PyDFannots/gui_assets/" --add-data "PyDFannots/templates;PyDFannots/templates/" --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "PyDFannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
             # command_cli = 'pyinstaller --noconfirm --onedir --noupx --name "PyDFAnnots" --ascii --clean --add-data "PyDFannots/templates;PyDFannots/templates/"  "PyDFannots.py"'
             # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
