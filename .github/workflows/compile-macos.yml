@@ -78,7 +78,7 @@ jobs:
         run: |
           # chmod +x dist/pydfannots_osx/pydfannots_osx.app
           chmod +x dist/pydfannots_osx/pydfannotsgui_osx.app
-      - name: Tar.gz folder
+      - name: Zip folder
         run: |
           cd dist/
           zip -r pydfannots_osx.zip pydfannots_osx
