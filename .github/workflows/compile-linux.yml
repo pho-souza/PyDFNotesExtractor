@@ -57,7 +57,10 @@ jobs:
       - name: build binary
         run: |
           python3 setup.py build_binary
-
+      - name: setup permissions
+        run: |
+          chmod +x './PyDFAnnots_linux/pydfannots_linux
+          chmod +x './PyDFAnnots_linux/pydfannotsgui_linux
       - name: Tar.gz folder
         run: |
           tar -czvf dist/PyDFAnnots_linux.tar.gz dist/PyDFAnnots_linux
