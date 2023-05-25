@@ -78,8 +78,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 pass
             exit(0)
         elif sys.platform == 'linux':
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "./PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "./PyDFannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "./PyDFannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "./PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "./pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "./pydfannots.py"'
             # # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
