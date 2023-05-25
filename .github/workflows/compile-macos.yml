@@ -76,11 +76,13 @@ jobs:
           python setup.py build_binary
       - name: setup permissions
         run: |
-          chmod +x dist/pydfannots_osx/pydfannots_osx
-          chmod +x dist/pydfannots_osx/pydfannotsgui_osx
+          # chmod +x dist/pydfannots_osx/pydfannots_osx.app
+          chmod +x dist/pydfannots_osx/pydfannotsgui_osx.app
       - name: Tar.gz folder
         run: |
-          zip dist/pydfannots_osx.zip dist/pydfannots_osx
+          cd dist/
+          zip pydfannots_osx.zip pydfannots_osx/
+          cd ..
       - name: upload build
         uses: actions/upload-artifact@v3
         with:

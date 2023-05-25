@@ -47,12 +47,12 @@ class BuildBinaryCommand(distutils.cmd.Command):
             command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
 
             os.system(command_gui)
-            os.system(command_cli)
+            #os.system(command_cli)
             if os.path.exists(f'dist/pydfannots_osx'):
                 shutil.rmtree(f'dist/pydfannots_osx')
             os.makedirs(f'dist/pydfannots_osx', exist_ok=True)
-            shutil.move(f'dist/pydfannots',f'dist/pydfannots_osx/pydfannots_osx')
-            shutil.move(f'dist/pydfannotsgui',f'dist/pydfannots_osx/pydfannotsgui_osx')
+            #shutil.move(f'dist/pydfannots.app',f'dist/pydfannots_osx/pydfannots_osx.app')
+            shutil.move(f'dist/pydfannotsgui.app',f'dist/pydfannots_osx/pydfannotsgui_osx.app')
             os.makedirs(f'dist/pydfannots_osx/PyDFannots', exist_ok=True)
             try:
                 shutil.copytree(f'PyDFannots/gui_assets', f'dist/pydfannots_osx/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
