@@ -36,6 +36,10 @@
 {% elif annot.content == "#h2" or annot.content == "#H2" or  annot.content == "H2" %}
 ### {{annot.text}}
 
+{% elif annot.content == "lembrar" %}
+> [!Pesquisar]
+> {{annot.text}}
+
 {% else %}
 # {{annot.text}}
 
