@@ -6,7 +6,7 @@ Information about config file,  templates and more [here](https://github.com/pho
 -----------
 
 To install,  use the command:
-``python setup.py install``
+``python setup.py build_binary``
 
 # Usage
 
