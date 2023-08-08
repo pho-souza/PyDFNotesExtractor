@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['PyDFannots-gui.py'],
+    ['pydfannots-gui.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -41,5 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['PyDFannots/gui_assets/logo.ico'],
+    icon=['app\\gui_assets\\logo.ico'],
 )

@@ -4,5 +4,5 @@
 # to by run directly from a source tree clone.
 
 if __name__ == '__main__':
-    import PyDFannots.gui
-    PyDFannots.gui.main()
+    import app.gui
+    app.gui.main()

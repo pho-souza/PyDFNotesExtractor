@@ -45,10 +45,10 @@ jobs:
           ls . -a
           echo ==========
           echo ls pydfannots/ -a
-          ls PyDFannots/ -a
+          ls app/ -a
           echo ==========
           echo ls dist/ -a
-          ls ./PyDFannots -a
+          ls ./app -a
           ls .. -a
       - name: Install python dependencies
         run: |

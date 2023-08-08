@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import PyDFannots.pydfannots as  pydfannots
-import PyDFannots.utils as utils
-import PyDFannots.cfg as cfg
+import app.pydfannots as  pydfannots
+import app.utils as utils
+import app.cfg as cfg
 import json
 import os
 import re

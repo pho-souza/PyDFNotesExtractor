@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['PyDFannots.py'],
+    ['pydfannots.py'],
     pathex=[],
     binaries=[],
     datas=[],
