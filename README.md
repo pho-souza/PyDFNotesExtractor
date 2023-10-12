@@ -4,7 +4,7 @@
 This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
 
 -----------
-git 
+
 To install, use the command:
 ``python setup.py install``
 

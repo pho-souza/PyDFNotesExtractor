@@ -3,6 +3,7 @@ import PyDFannots.utils as utils
 import fitz
 import re
 import os
+import shutil
 
 
 class Note_extractor():
@@ -86,6 +87,26 @@ class Note_extractor():
                 self.highlights.append(anotacao)
             self.reorder_columns(columns=1)
             self.get_metadata()
+            
+    def import_template(self, path:str):
+        """
+        Import a template file to template folder
+
+        Args:
+            path (str): path of the file
+        """
+        full_path = os.path.abspath(path)
+        
+        file_name = os.path.basename(full_path)
+        
+        move_path = "templates//" + file_name
+        
+        move_path = os.path.abspath(move_path)
+        
+        print("full_path: ", full_path)
+        print("move_path: ", move_path)
+        
+        shutil.copyfile(full_path,dst=move_path)
             
     def __check_contain(self,r_word, points):
         """If `r_word` is contained in the rectangular area.

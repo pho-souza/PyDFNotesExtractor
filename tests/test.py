@@ -24,6 +24,9 @@ extractor = pydfannots.Note_extractor(file)
 
 extractor.get_metadata()
 extractor.metadata
+
+extractor.import_template("temp.txt")
+
 extractor.notes_extract(intersection_level=0)
 extractor.adjust_color()
 extractor.adjust_date()
