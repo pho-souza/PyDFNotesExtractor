@@ -1,7 +1,7 @@
 # PyDFNotesExtractor
 
 This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
-Information about config file,  templates and more [here](https://github.com/pho-souza/PyDFannots/blob/main/doc/README.MD)
+Information about config file,  templates and more [here](https://github.com/pho-souza/app/blob/main/doc/README.MD)
 
 -----------
 
@@ -34,7 +34,7 @@ Flags:
     -rg,  --reorder-group    Reorder annotations using some criteria.
     -img,  --image   Extract rectangle annotation as image.
     -ink,  --ink-annotation  Extract ink anotations as image.
-    -temp,  --template   Select a jinja2 template. Default set to PyDFannots/templates/template_html.html.
+    -temp,  --template   Select a jinja2 template. Default set to app/templates/template_html.html.
     -il,  --intersection_level   Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.
     -f,  --format    Format to export file. Default set to "". Support to json and csv.
     -il,  --intersection-level   Level of intersection between text and highlights. Value between 0 and 1. Default set to 0.1.

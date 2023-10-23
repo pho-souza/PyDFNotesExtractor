@@ -7,9 +7,8 @@
     <title>{{title}}</title>
     {# <link rel="stylesheet" href="template_css.css"> #}
     <style>
-      {% include 'css/template_css.css' %}
+      {% include 'template_css.css' %}
     </style>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
 </head>
 <body>
   <pre>
@@ -29,6 +28,8 @@
     <hr/>
 
   {%- endif -%}
+  {% macro title_type(htype) %}
+  	{{htype | upper | replace("#",""}}
   {% endmacro %}
   {% set anterior = namespace('') %}
   {% set anterior.content = highlights[0].content %}
@@ -39,15 +40,15 @@
     {% if annot.has_img %}
     <img src="{{annot.img_path}}"/>
     {% endif %}
-    {% elif annot.color_name == 'Red' %}
+    {% elif annot.color_name == 'Cyan' %}
 
-    {% if annot.content == "#h1" or annot.content == "#H1" or  annot.content == "H1"%}
+    {% if title_type(content) == "H1"%}
     <h1>{{annot.text}}</h1>
 
-    {% elif annot.content == "#h2" or annot.content == "#H2" or  annot.content == "H2" %}
+    {% elif title_type(content) == "H2"%}
     <h2>{{annot.text}}</h2>
 
-    {% elif annot.content == "#h3" or annot.content == "#H3" or  annot.content == "H3" %}
+    {% elif title_type(content) == "H3"%}
     <h3>{{annot.text}}</h3>
 
     {% else %}
@@ -145,7 +146,5 @@
 
 </body>
 </html>
-
-
 
 

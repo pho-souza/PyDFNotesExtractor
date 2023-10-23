@@ -7,7 +7,7 @@
  },
  {
   "optionDest": "filenames",
-  "value": "F:/Python/PyDFannots/pydfannots-gui.py"
+  "value": "F:/Python/app/pydfannots-gui.py"
  },
  {
   "optionDest": "onefile",
@@ -19,7 +19,7 @@
  },
  {
   "optionDest": "icon_file",
-  "value": "F:/Python/PyDFannots/PyDFannots/gui_assets/logo.ico"
+  "value": "F:/Python/app/app/gui_assets/logo.ico"
  },
  {
   "optionDest": "name",
@@ -35,7 +35,7 @@
  },
  {
   "optionDest": "splash",
-  "value": "F:/Python/PyDFannots/PyDFannots/gui_assets/logo.png"
+  "value": "F:/Python/app/app/gui_assets/logo.png"
  },
  {
   "optionDest": "strip",
@@ -79,15 +79,15 @@
  },
  {
   "optionDest": "datas",
-  "value": "F:/Python/PyDFannots/PyDFannots/gui_assets/;PyDFannots/gui_assets/"
+  "value": "F:/Python/app/app/gui_assets/;app/gui_assets/"
  },
  {
   "optionDest": "datas",
-  "value": "F:/Python/PyDFannots/PyDFannots/templates;PyDFannots/templates/"
+  "value": "F:/Python/app/app/templates;app/templates/"
  },
  {
   "optionDest": "hookspath",
-  "value": "F:/Python/PyDFannots"
+  "value": "F:/Python/app"
  }
 ],
 "nonPyinstallerOptions": {

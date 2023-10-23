@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-pip/pyinstaller build script for PyDFannots.
+pip/pyinstaller build script for app.
 
 Install as Python package:
     python3 setup.py install
@@ -15,11 +15,11 @@ import sys
 import shutil
 import setuptools
 import distutils.cmd
-from PyDFannots import __version__
+from app import __version__
 
 OSX_INFO_PLIST = "configs/osx/Info.plist"
 
-NAME = 'PyDFannots'
+NAME = 'app'
 MAIN = 'pydfannots.py'
 VERSION = __version__
 
@@ -43,8 +43,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
             with open(OSX_INFO_PLIST, 'w') as file:
                 file.write(filedata)
                 
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.icns" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "app/gui_assets/logo.icns" --name "pydfannotsgui" --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --clean  "pydfannots.py"'
 
             os.system(command_gui)
             #os.system(command_cli)
@@ -53,13 +53,13 @@ class BuildBinaryCommand(distutils.cmd.Command):
             os.makedirs(f'dist/pydfannots_osx', exist_ok=True)
             #shutil.move(f'dist/pydfannots.app',f'dist/pydfannots_osx/pydfannots_osx.app')
             shutil.move(f'dist/pydfannotsgui.app',f'dist/pydfannots_osx/pydfannotsgui_osx.app')
-            os.makedirs(f'dist/pydfannots_osx/PyDFannots', exist_ok=True)
+            os.makedirs(f'dist/pydfannots_osx/app', exist_ok=True)
             try:
-                shutil.copytree(f'PyDFannots/gui_assets', f'dist/pydfannots_osx/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree(f'app/gui_assets', f'dist/pydfannots_osx/app/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             try:
-                shutil.copytree(f'PyDFannots/templates', f'dist/pydfannots_osx/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree(f'app/templates', f'dist/pydfannots_osx/app/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             # os.chmod('dist/PyDFAnnots.app/Contents/Resources/7z', 0o777)
@@ -76,31 +76,31 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 options = {'py2app': OPTIONS},
                 setup_requires = ['py2app'])
         elif sys.platform == 'win32':
-            # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "PyDFAnnots GUI" --ascii --clean --add-data "PyDFannots/gui_assets/;PyDFannots/gui_assets/" --add-data "PyDFannots/templates;PyDFannots/templates/" --additional-hooks-dir "."  "PyDFannots-gui.py"'
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
-            # command_cli = 'pyinstaller --noconfirm --onedir --noupx --name "PyDFAnnots" --ascii --clean --add-data "PyDFannots/templates;PyDFannots/templates/"  "PyDFannots.py"'
-            # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
+            # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "app/gui_assets/logo.ico" --name "PyDFAnnots GUI" --clean --add-data "app/gui_assets/;app/gui_assets/" --add-data "app/templates;app/templates/" --additional-hooks-dir "."  "app-gui.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "app/gui_assets/logo.ico" --name "pydfannotsgui" --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --clean  "pydfannots.py"'
+            # command_cli = 'pyinstaller --noconfirm --onedir --noupx --name "PyDFAnnots" --clean --add-data "app/templates;app/templates/"  "app.py"'
+            # os.system('pyinstaller -y -F -i app\\gui_assets\\logo.ico -n app_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
             if os.path.exists(f'dist/PyDFAnnots_win'):
                 shutil.rmtree(f'dist/PyDFAnnots_win')
-            os.makedirs(f'dist/PyDFAnnots_win/PyDFannots', exist_ok=True)
+            os.makedirs(f'dist/PyDFAnnots_win/app', exist_ok=True)
             shutil.move(f'dist/pydfannots.exe',f'dist/PyDFAnnots_win/pydfannots.exe')
             shutil.move(f'dist/pydfannotsgui.exe',f'dist/PyDFAnnots_win/pydfannotsgui_win.exe')
             try:
-                shutil.copytree(f'PyDFannots/gui_assets', f'dist/PyDFAnnots_win/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree(f'app/gui_assets', f'dist/PyDFAnnots_win/app/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             try:
-                shutil.copytree(f'PyDFannots/templates', f'dist/PyDFAnnots_win/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree(f'app/templates', f'dist/PyDFAnnots_win/app/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             exit(0)
         elif sys.platform == 'linux':
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "./PyDFannots/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "./pydfannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "./pydfannots.py"'
-            # # os.system('pyinstaller -y -F -i PyDFannots\\gui_assets\\logo.ico -n PyDFannots_' + VERSION + ' -w --noupx pydfannots-gui.py')
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "./app/gui_assets/logo.ico" --name "pydfannotsgui" --clean --additional-hooks-dir "."  "./pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --clean  "./pydfannots.py"'
+            # # os.system('pyinstaller -y -F -i app\\gui_assets\\logo.ico -n app_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
             if os.path.exists(f'dist/pydfannots_linux'):
@@ -108,13 +108,13 @@ class BuildBinaryCommand(distutils.cmd.Command):
             os.makedirs(f'dist/pydfannots_linux', exist_ok=True)
             shutil.move(f'dist/pydfannots',f'dist/pydfannots_linux/pydfannots_linux')
             shutil.move(f'dist/pydfannotsgui',f'dist/pydfannots_linux/pydfannotsgui_linux')
-            os.makedirs(f'dist/pydfannots_linux/PyDFannots', exist_ok=True)
+            os.makedirs(f'dist/pydfannots_linux/app', exist_ok=True)
             try:
-                shutil.copytree('./PyDFannots/gui_assets', './dist/pydfannots_linux/PyDFannots/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree('./app/gui_assets', './dist/pydfannots_linux/app/gui_assets', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             try:
-                shutil.copytree('./PyDFannots/templates', './dist/pydfannots_linux/PyDFannots/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
+                shutil.copytree('./app/templates', './dist/pydfannots_linux/app/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
             
@@ -138,15 +138,15 @@ setuptools.setup(
     author_email='pho.souza.mail@gmail.com',
     description='PDF annotations extract using PyMuPDF.',
     long_description=readme,
-    url='https://github.com/pho-souza/PyDFannots',
+    url='https://github.com/pho-souza/app',
     license=license,
     keywords=['pdf', 'annotations', 'highlight', 'pymupdf', 'obsidian'],
     entry_points={
         'console_scripts': [
-            'pydfannots=PyDFannots.cli:main',
+            'pydfannots=app.cli:main',
         ],
         'gui_scripts': [
-            'pydfannots=PyDFannots.gui:main',
+            'pydfannots=app.gui:main',
         ],
     },
     packages=['pydfannots'],
