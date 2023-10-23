@@ -43,8 +43,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
             with open(OSX_INFO_PLIST, 'w') as file:
                 file.write(filedata)
                 
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "app/gui_assets/logo.icns" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "app/gui_assets/logo.icns" --name "pydfannotsgui" --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --clean  "pydfannots.py"'
 
             os.system(command_gui)
             #os.system(command_cli)
@@ -76,10 +76,10 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 options = {'py2app': OPTIONS},
                 setup_requires = ['py2app'])
         elif sys.platform == 'win32':
-            # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "app/gui_assets/logo.ico" --name "PyDFAnnots GUI" --ascii --clean --add-data "app/gui_assets/;app/gui_assets/" --add-data "app/templates;app/templates/" --additional-hooks-dir "."  "app-gui.py"'
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "app/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "pydfannots.py"'
-            # command_cli = 'pyinstaller --noconfirm --onedir --noupx --name "PyDFAnnots" --ascii --clean --add-data "app/templates;app/templates/"  "app.py"'
+            # command_gui = 'pyinstaller --noconfirm --onedir --windowed --noupx --icon "app/gui_assets/logo.ico" --name "PyDFAnnots GUI" --clean --add-data "app/gui_assets/;app/gui_assets/" --add-data "app/templates;app/templates/" --additional-hooks-dir "."  "app-gui.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "app/gui_assets/logo.ico" --name "pydfannotsgui" --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --clean  "pydfannots.py"'
+            # command_cli = 'pyinstaller --noconfirm --onedir --noupx --name "PyDFAnnots" --clean --add-data "app/templates;app/templates/"  "app.py"'
             # os.system('pyinstaller -y -F -i app\\gui_assets\\logo.ico -n app_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
@@ -98,8 +98,8 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 pass
             exit(0)
         elif sys.platform == 'linux':
-            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "./app/gui_assets/logo.ico" --name "pydfannotsgui" --ascii --clean --additional-hooks-dir "."  "./pydfannots-gui.py"'
-            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --ascii --clean  "./pydfannots.py"'
+            command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "./app/gui_assets/logo.ico" --name "pydfannotsgui" --clean --additional-hooks-dir "."  "./pydfannots-gui.py"'
+            command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --clean  "./pydfannots.py"'
             # # os.system('pyinstaller -y -F -i app\\gui_assets\\logo.ico -n app_' + VERSION + ' -w --noupx pydfannots-gui.py')
             os.system(command_gui)
             os.system(command_cli)
