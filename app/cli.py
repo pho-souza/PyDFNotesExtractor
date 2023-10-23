@@ -120,6 +120,10 @@ def parse_args(args) -> Tuple[argparse.Namespace]:
     secondary.add_argument("--count-annotations", "-count",  default =  False, action="store_true",
                    help = "Count the number of annotations")
 
+    secondary.add_argument("--total-pages", "-pages",  default =  False, action="store_true",
+                    help = "Count the number of pages")
+
+
     
     args = principal.parse_args(args)
 
@@ -162,8 +166,11 @@ def main(args=None):
         len_highlight = extractor.count_highlights
         print(f'This file has {len_highlight} annotations')
         return len_highlight
-    
-        
+
+    if args.input and args.total_pages:
+        num_pages = extractor.number_of_pages
+        print(f'This file has {num_pages} pages')
+        return num_pages
 
     if args.input != None and args.output != None:
         input_file = args.input[0]
@@ -174,6 +181,9 @@ def main(args=None):
         input_file = os.path.abspath(input_file)
         input_file = os.path.abspath(input_file)
         export_file = os.path.abspath(export_file)
+        
+        
+        
 
         
 

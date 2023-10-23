@@ -3,11 +3,12 @@
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import StringVar, BooleanVar, IntVar, DoubleVar, PhotoImage, END, Listbox, Text
-from tkinter.ttk import Frame, Button, Combobox, Label, Checkbutton, Spinbox, Style, Notebook, Scrollbar, Entry
+from tkinter.ttk import Frame, Button, Combobox, Label, Checkbutton, Spinbox, Style, Notebook, Scrollbar, Entry, Progressbar, Treeview
 from tkinterdnd2 import DND_FILES
 
 from app.cfg import Config_file as Config_class
 from app.utils import path_normalizer,  is_dir
+from threading import *
 
 import os
 import app.cli as cli
@@ -15,6 +16,13 @@ import re
 import json
 from random import choices as random_choices
 import string
+
+
+def threading(): 
+    # Call work function 
+    t1=Thread(target=cli.main) 
+    t1.start() 
+
 
 class gui_interface():
     def __init__(self,  master = None) -> None:
@@ -55,6 +63,9 @@ class gui_pdf_load(gui_interface):
 
         self.vars["status_text"] = StringVar()
         self.vars["status_text"].set("PyDF Annot opened!")
+    
+        self.vars["progress_status"] = DoubleVar()
+        self.vars["progress_status"].set(0.0)
 
         self.vars["parameters"] = StringVar()
         self.vars["parameters"].set("")
@@ -70,7 +81,7 @@ class gui_pdf_load(gui_interface):
         self.row_1 = Frame(self.ui)
         self.row_2 = Frame(self.ui)
         self.row_3 = Frame(self.ui)
-        self.file_list = Listbox(self.row_1)
+        self.pdf_list = Treeview(self.row_1)
 
 
 
@@ -107,13 +118,14 @@ class gui_pdf_load(gui_interface):
 
         # Status bar
         self.status_bar = Label(self.row_3, textvariable=self.vars["status_text"])
+        self.progress_bar = Progressbar(self.row_3, orient='horizontal', length=250, mode = 'determinate')
 
     def basic_ui_draw(self):
         self.ui.grid(sticky='nwse')
         self.row_1.grid(column = 1,  row = 1, sticky='nwse')
         self.row_2.grid(column = 1,  row = 2, sticky='nwse')
         self.row_3.grid(column = 1,  row = 3, sticky='nwse')
-        self.file_list.grid(column = 1,  row = 1,  columnspan = 2, sticky = "nwse")
+        self.pdf_list.grid(column = 1,  row = 1,  columnspan = 2, sticky = "nwse")
 
         self.btn_file_selector.grid(column=1, row = 2, sticky = "nwse")
         self.btn_pdf_export.grid(column=2, row = 2, sticky = "nwse")
@@ -157,6 +169,7 @@ class gui_pdf_load(gui_interface):
         # self.parameters_cfg_save.grid(sticky = "nwse")
 
         self.status_bar.grid(sticky="nwse")
+        self.progress_bar.grid(sticky='nwse')
         self.set_cfg()
 
     @property
@@ -185,6 +198,26 @@ class gui_pdf_load(gui_interface):
             file = open("default_cfg.json").read()
             self.configuration_file = json.load(file)
             # self.configuration_file
+    
+    def get_pdf_info(self, pdf_path = '', event=None):
+        status = "Getting data from: " + pdf_path
+        self.set_status(status)
+
+        pdf = path_normalizer(pdf_path)
+
+        pdf_path = os.path.abspath(pdf)
+
+        pdf_path = path_normalizer(pdf_path)
+
+        input_file = ['-i', pdf_path]
+
+        argument_count_annots = input_file + ['--count-annotations']
+        argument_count_pages = input_file + ['--total-pages']
+
+        number_of_annots = cli.main(argument_count_annots)
+        number_of_pages = cli.main(argument_count_pages)
+        
+        return (pdf_path, number_of_pages, number_of_annots)
 
     def set_cfg(self, event=None):
         if not hasattr(self, "cfg"):
@@ -194,8 +227,8 @@ class gui_pdf_load(gui_interface):
         self.cfg["TOLERANCE"] = self.vars["tol"].get()
         self.cfg["TEMPLATE"] = self.vars["template"].get()
         self.cfg["FORMAT"] = self.vars["format"].get()
-        self.cfg["IMAGE"] = self.vars["format"].get()
-        self.cfg["INK"] = self.vars["format"].get()
+        self.cfg["IMAGE"] = self.vars["img"].get()
+        self.cfg["INK"] = self.vars["ink"].get()
         # print(self.cfg)
         self.edit_parameters()
 
@@ -266,7 +299,7 @@ class gui_pdf_load(gui_interface):
         self.btn_remove_item["command"] = self.remove_file
         self.btn_pdf_export["command"] = self.export_folder
 
-        self.file_list.bind("<Delete>",  self.remove_file)
+        self.pdf_list.bind("<Delete>",  self.remove_file)
 
         # self.vars["il"].set(self.default_configs["INTERSECTION_LEVEL"])
         # self.vars["col"].set(self.default_configs["COLUMNS"])
@@ -294,12 +327,23 @@ class gui_pdf_load(gui_interface):
 
         self.parameters_template["values"] = self.templates
         self.parameters_format["values"] = self.values_format
+        
 
         # self.vars["template"].set("template_html.html")
 
-        self.file_list.drop_target_register(DND_FILES)
+        self.pdf_list.drop_target_register(DND_FILES)
+        self.pdf_list.dnd_bind("<<Drop>>",  self.add_file_drag_drop)
+        
+        self.pdf_list['columns'] = ['Files', 'Number of pages', 'Number of annotations']
+        
+        self.pdf_list['show'] = 'headings'
 
-        self.file_list.dnd_bind("<<Drop>>",  self.add_file_drag_drop)
+        for col in self.pdf_list['columns']:
+            if col == 'Files':
+                self.pdf_list.column(col, minwidth=int(300))
+            self.pdf_list.heading(col, text=col)
+            
+        
         self.set_cfg()
 
     def add_file_drag_drop(self, event):
@@ -314,14 +358,25 @@ class gui_pdf_load(gui_interface):
         else:
             lista = list_files.split()
         # print(lista)
-
+        
+        values = []
         for i in lista:
             if not i == '':
-                self.file_list.insert("end", re.sub("^[ ]+", "", i))
+                pdf_inserted = re.sub("^[ ]+", "", i)
+                value_pdf = (pdf_inserted, '', '')
+                values.append(value_pdf)
+        for i in values:
+            self.pdf_list.insert('', 'end', values = i)
         self.validate_files()
 
     def validate_files(self):
-        self.files = list(self.file_list.get(0, END))
+        self.files = list()
+        for line in self.pdf_list.get_children():
+            print(line)
+            pdf_file = self.pdf_list.item(line)['values'][0]
+            print(pdf_file)
+            self.files.append(pdf_file)
+        # self.files = list(self.pdf_list.get_children(0, END))
         for file in self.files:
             self.files.remove(file)
             file = path_normalizer(file)
@@ -340,14 +395,19 @@ class gui_pdf_load(gui_interface):
         self.remove_all_files()
 
         for i in self.files:
-
-            self.file_list.insert("end",  i)
+            # value_pdf = self.get_pdf_info(i)
+            values = self.get_pdf_info(i)
+            self.pdf_list.insert('', 'end',  values=values)
         self.set_status(f'There are {len(self.files)} PDFs files. ')
 
 
 
     def export_folder(self):
-        self.files = list(self.file_list.get(0, END))
+        self.files = list()
+        # self.files = list(self.pdf_list.get(0, END))
+        for i in self.pdf_list.get_children():
+            pdf = self.pdf_list.item(i)['values'][0]
+            self.files.append(pdf)
         # print(self.files)
 
         if len(self.files) >= 1:
@@ -367,21 +427,24 @@ class gui_pdf_load(gui_interface):
                 file = i.name
                 path = os.path.abspath(file)
                 if not is_dir(file):
-                    self.file_list.insert("end",  path)
+                    values = (file, '', '')
+                    self.pdf_list.insert('', 'end', values=values)
         else:
             file = os.path.abspath(file_open)
             if not is_dir(file):
-                self.file_list.insert("end",  path)
+                values = self.get_pdf_info(file)
+                self.pdf_list.insert('', 'end', values=values)
         self.validate_files()
 
     def remove_all_files(self):
-        self.file_list.delete(0, END)
+        for line in self.pdf_list.get_children():
+            self.pdf_list.delete(line)
 
     def remove_file(self, event= None):
-        selected_items = self.file_list.curselection()
+        selected_items = self.pdf_list.curselection()
         for item in selected_items:
             # print(item)
-            self.file_list.delete(item)
+            self.pdf_list.delete(item)
 
     def set_size(self, width = 500,  height = 500):
         self.width = width
@@ -412,26 +475,29 @@ class gui_pdf_load(gui_interface):
             argument_count_annots = input_file + ['--count-annotations']
 
             print(argument_count_annots)
-
-            argument = input_file + ['-il', f'{self.cfg["INTERSECTION_LEVEL"]}',  '-tol', f'{self.cfg["TOLERANCE"]}', '--columns', f'{self.cfg["COLUMNS"]}', '--template', f'{self.cfg["TEMPLATE"]}']
-
+            
+            print(self.vars['format'])
+            if self.vars['format'].get() == 'Template':
+                argument = input_file + ['-il', f'{self.cfg["INTERSECTION_LEVEL"]}',  '-tol', f'{self.cfg["TOLERANCE"]}', '--columns', f'{self.cfg["COLUMNS"]}', '--template', f'{self.cfg["TEMPLATE"]}']
+            elif self.vars['format'].get() == 'json':
+                argument = input_file + ['-il', f'{self.cfg["INTERSECTION_LEVEL"]}',  '-tol', f'{self.cfg["TOLERANCE"]}', '--columns', f'{self.cfg["COLUMNS"]}', '--format', 'json']
+            elif self.vars['format'].get() == 'csv':
+                argument = input_file + ['-il', f'{self.cfg["INTERSECTION_LEVEL"]}',  '-tol', f'{self.cfg["TOLERANCE"]}', '--columns', f'{self.cfg["COLUMNS"]}', '--format', 'csv']
+            
             if os.path.exists(config_file):
                 argument = argument + ['--config', config_file]
 
             count_annotation = cli.main(argument_count_annots)
 
             if count_annotation > 0:
-                cli.main(argument)
+                t1 = Thread(target = cli.main, args = (argument, ))
+                t1.start()
                 status = f'Annotations for {pdf} extracted!'
                 self.set_status(status)
             else:
                 messagebox.showerror(title="Error!", message=f"{pdf_path} file don't have annotations.")
         status = f'All annotations extracted!'
         self.set_status(status)
-
-
-
-
 
 
 class gui_settings(gui_interface):
@@ -654,9 +720,9 @@ class gui_settings(gui_interface):
 
             
     def update_templates(self):
-        self.file_list.delete(0, "end")
+        self.file_list.delete(0, 'end')
         for i in self.templates:
-            self.file_list.insert("end",  i)
+            self.file_list.insert('end',  i)
 
     
     def load_template(self,  event=None):
@@ -668,11 +734,11 @@ class gui_settings(gui_interface):
 
         file = open(template,  mode='r',  encoding = "utf-8").read()
         # self.loaded_template = file
-        self.temp_text.delete("1.0", "end")
-        self.temp_text.insert("end", file)
+        self.temp_text.delete("1.0", 'end')
+        self.temp_text.insert('end', file)
 
-        self.rename_entry.delete(0, "end")
-        self.rename_entry.insert("end", file_name)
+        self.rename_entry.delete(0, 'end')
+        self.rename_entry.insert('end', file_name)
 
         self.update_templates()
 
@@ -727,10 +793,10 @@ class gui_settings(gui_interface):
         # if self.selected_items:
         self.selected_items = []
         file = self.default_template
-        self.temp_text.delete("1.0", "end")
-        self.temp_text.insert("end", file)
-        self.rename_entry.delete(0, "end")
-        self.rename_entry.insert("end", "new_template.html")
+        self.temp_text.delete("1.0", 'end')
+        self.temp_text.insert('end', file)
+        self.rename_entry.delete(0, 'end')
+        self.rename_entry.insert('end', "new_template.html")
         self.update_templates()
 
     def del_template(self):

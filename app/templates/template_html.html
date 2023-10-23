@@ -41,13 +41,13 @@
     {% endif %}
     {% elif annot.color_name == 'Cyan' %}
 
-    {% if annot.content == "#h1" or annot.content == "#H1" or  annot.content == "H1"%}
+    {% if annot.content.upper() == "#H1" or  annot.content.upper() == "H1"%}
     <h1>{{annot.text}}</h1>
 
-    {% elif annot.content == "#h2" or annot.content == "#H2" or  annot.content == "H2" %}
+    {% elif annot.content.upper() == "#H2" or  annot.content.upper() == "H2" %}
     <h2>{{annot.text}}</h2>
 
-    {% elif annot.content == "#h3" or annot.content == "#H3" or  annot.content == "H3" %}
+    {% elif annot.content.upper() == "#H3" or  annot.content.upper() == "H3" %}
     <h3>{{annot.text}}</h3>
 
     {% else %}
@@ -67,7 +67,6 @@
     {%- elif annot.content == '+' and anterior.content == '+' -%}
     {{- " " ~ annot.text ~ " " -}}
     {%- elif anterior.content == '+' -%}
-    POPOCO
     {% if annot.content and annot.content != "+" %}
     {{- " " ~ annot.text}}
     <ul><li>{{" " ~ annot.content}}</li></ul>
@@ -146,5 +145,6 @@
 
 </body>
 </html>
+
 
 
