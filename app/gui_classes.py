@@ -63,7 +63,7 @@ class gui_pdf_load(gui_interface):
 
         self.vars["status_text"] = StringVar()
         self.vars["status_text"].set("PyDF Annot opened!")
-    
+
         self.vars["progress_status"] = DoubleVar()
         self.vars["progress_status"].set(0.0)
 
