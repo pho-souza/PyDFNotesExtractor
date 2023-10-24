@@ -18,10 +18,10 @@ from random import choices as random_choices
 import string
 
 
-def threading(): 
-    # Call work function 
-    t1=Thread(target=cli.main) 
-    t1.start() 
+def threading():
+    # Call work function
+    t1=Thread(target=cli.main)
+    t1.start()
 
 
 class gui_interface():
@@ -125,10 +125,10 @@ class gui_pdf_load(gui_interface):
         self.row_1.grid(column = 1,  row = 1, sticky='nwse')
         self.row_2.grid(column = 1,  row = 2, sticky='nwse')
         self.row_3.grid(column = 1,  row = 3, sticky='nwse')
-        self.pdf_list.grid(column = 1,  row = 1,  columnspan = 2, sticky = "nwse")
+        self.pdf_list.grid(column = 1,  row = 1,  columnspan = 2, sticky = 'nwse')
 
-        self.btn_file_selector.grid(column=1, row = 2, sticky = "nwse")
-        self.btn_pdf_export.grid(column=2, row = 2, sticky = "nwse")
+        self.btn_file_selector.grid(column=1, row = 2, sticky = 'nwse')
+        self.btn_pdf_export.grid(column=2, row = 2, sticky = 'nwse')
         self.ui.grid_columnconfigure(1, weight=7)
 
         self.ui.grid_rowconfigure(1, weight=7)
@@ -147,28 +147,28 @@ class gui_pdf_load(gui_interface):
         self.row_2.grid_columnconfigure(2, weight=3)
         self.row_2.grid_columnconfigure(3, weight=3)
 
-        self.parameters_tab.grid(column = 0,  row = 0, sticky = "nwse")
-        self.parameters_label.grid(row = 0,  sticky = "nwse")
-        self.parameters_entry.grid(row = 0,  column = 1, sticky = "nwse",  columnspan=2)
-        self.parameters_template_label.grid(row = 1,  sticky = "nwse")
-        self.parameters_template.grid(row = 1,  column = 1, sticky = "nwse")
-        self.parameters_il_label.grid(row = 2,  sticky = "nwse")
-        self.parameters_il.grid(row = 2,  column = 1, sticky = "nwse")
-        self.parameters_col_label.grid(row = 3,  sticky = "nwse")
-        self.parameters_col.grid(row = 3,  column = 1, sticky = "nwse")
-        self.parameters_tol_label.grid(row = 4,  sticky = "nwse")
-        self.parameters_tol.grid(row = 4,  column = 1, sticky = "nwse")
-        self.parameters_img_label.grid(row = 5,  sticky = "nwse")
-        self.parameters_img.grid(row = 5,  column = 1, sticky = "nwse")
-        self.parameters_ink_label.grid(row = 4,  sticky = "nwse")
-        self.parameters_ink.grid(row = 6,  column = 1, sticky = "nwse")
-        self.parameters_format_label.grid(row = 7,  sticky = "nwse")
-        self.parameters_format.grid(row = 7,  column = 1, sticky = "nwse")
-        # self.parameters_cfg_label.grid(row = 8,  sticky = "nwse")
-        # self.parameters_cfg_load.grid(row = 9,  sticky = "nwse")
-        # self.parameters_cfg_save.grid(sticky = "nwse")
+        self.parameters_tab.grid(column = 0,  row = 0, sticky = 'nwse')
+        self.parameters_label.grid(row = 0,  sticky = 'nwse')
+        self.parameters_entry.grid(row = 0,  column = 1, sticky = 'nwse',  columnspan=2)
+        self.parameters_template_label.grid(row = 1,  sticky = 'nwse')
+        self.parameters_template.grid(row = 1,  column = 1, sticky = 'nwse')
+        self.parameters_il_label.grid(row = 2,  sticky = 'nwse')
+        self.parameters_il.grid(row = 2,  column = 1, sticky = 'nwse')
+        self.parameters_col_label.grid(row = 3,  sticky = 'nwse')
+        self.parameters_col.grid(row = 3,  column = 1, sticky = 'nwse')
+        self.parameters_tol_label.grid(row = 4,  sticky = 'nwse')
+        self.parameters_tol.grid(row = 4,  column = 1, sticky = 'nwse')
+        self.parameters_img_label.grid(row = 5,  sticky = 'nwse')
+        self.parameters_img.grid(row = 5,  column = 1, sticky = 'nwse')
+        self.parameters_ink_label.grid(row = 4,  sticky = 'nwse')
+        self.parameters_ink.grid(row = 6,  column = 1, sticky = 'nwse')
+        self.parameters_format_label.grid(row = 7,  sticky = 'nwse')
+        self.parameters_format.grid(row = 7,  column = 1, sticky = 'nwse')
+        # self.parameters_cfg_label.grid(row = 8,  sticky = 'nwse')
+        # self.parameters_cfg_load.grid(row = 9,  sticky = 'nwse')
+        # self.parameters_cfg_save.grid(sticky = 'nwse')
 
-        self.status_bar.grid(sticky="nwse")
+        self.status_bar.grid(sticky='nwse')
         self.progress_bar.grid(sticky='nwse')
         self.set_cfg()
 
@@ -198,7 +198,7 @@ class gui_pdf_load(gui_interface):
             file = open("default_cfg.json").read()
             self.configuration_file = json.load(file)
             # self.configuration_file
-    
+
     def get_pdf_info(self, pdf_path = '', event=None):
         status = "Getting data from: " + pdf_path
         self.set_status(status)
@@ -216,7 +216,7 @@ class gui_pdf_load(gui_interface):
 
         number_of_annots = cli.main(argument_count_annots)
         number_of_pages = cli.main(argument_count_pages)
-        
+
         return (pdf_path, number_of_pages, number_of_annots)
 
     def set_cfg(self, event=None):
@@ -327,23 +327,23 @@ class gui_pdf_load(gui_interface):
 
         self.parameters_template["values"] = self.templates
         self.parameters_format["values"] = self.values_format
-        
+
 
         # self.vars["template"].set("template_html.html")
 
         self.pdf_list.drop_target_register(DND_FILES)
         self.pdf_list.dnd_bind("<<Drop>>",  self.add_file_drag_drop)
-        
+
         self.pdf_list['columns'] = ['Files', 'Number of pages', 'Number of annotations']
-        
+
         self.pdf_list['show'] = 'headings'
 
         for col in self.pdf_list['columns']:
             if col == 'Files':
                 self.pdf_list.column(col, minwidth=int(300))
             self.pdf_list.heading(col, text=col)
-            
-        
+
+
         self.set_cfg()
 
     def add_file_drag_drop(self, event):
@@ -358,7 +358,7 @@ class gui_pdf_load(gui_interface):
         else:
             lista = list_files.split()
         # print(lista)
-        
+
         values = []
         for i in lista:
             if not i == '':
@@ -475,7 +475,7 @@ class gui_pdf_load(gui_interface):
             argument_count_annots = input_file + ['--count-annotations']
 
             print(argument_count_annots)
-            
+
             print(self.vars['format'])
             if self.vars['format'].get() == 'Template':
                 argument = input_file + ['-il', f'{self.cfg["INTERSECTION_LEVEL"]}',  '-tol', f'{self.cfg["TOLERANCE"]}', '--columns', f'{self.cfg["COLUMNS"]}', '--template', f'{self.cfg["TEMPLATE"]}']
@@ -483,7 +483,7 @@ class gui_pdf_load(gui_interface):
                 argument = input_file + ['-il', f'{self.cfg["INTERSECTION_LEVEL"]}',  '-tol', f'{self.cfg["TOLERANCE"]}', '--columns', f'{self.cfg["COLUMNS"]}', '--format', 'json']
             elif self.vars['format'].get() == 'csv':
                 argument = input_file + ['-il', f'{self.cfg["INTERSECTION_LEVEL"]}',  '-tol', f'{self.cfg["TOLERANCE"]}', '--columns', f'{self.cfg["COLUMNS"]}', '--format', 'csv']
-            
+
             if os.path.exists(config_file):
                 argument = argument + ['--config', config_file]
 
@@ -520,7 +520,7 @@ class gui_settings(gui_interface):
 
         self.notebook = Notebook(self.ui,  style='lefttab.TNotebook')
 
-        
+
 
         # Config of template tab
         self.template_tab = Frame(self.ui)
@@ -553,16 +553,16 @@ class gui_settings(gui_interface):
 
     def basic_ui_draw(self):
         self.ui.grid_columnconfigure(0, weight=10)
-        self.notebook.grid(sticky="nwse", row=0, column=0)
+        self.notebook.grid(sticky='nwse', row=0, column=0)
 
         self.col_1.grid(column = 1,  row = 1, sticky='nwse',  rowspan=3)
         self.col_2.grid(column = 2,  row = 1, sticky='nwse')
-        self.file_list.grid(column = 1,  row = 1,  columnspan = 3, sticky = "nwse")
-        self.temp_text.grid(sticky="nwse")
-        self.btn_add_template.grid(column=1, row = 2, sticky = "nwse")
-        self.btn_del_template.grid(column=2, row = 2, sticky = "nwse")
-        self.btn_load_template.grid(column=3,  row = 2,  sticky = "nwse")
-        self.temp_text.grid(column = 0, row = 3, sticky="nwse")
+        self.file_list.grid(column = 1,  row = 1,  columnspan = 3, sticky = 'nwse')
+        self.temp_text.grid(sticky='nwse')
+        self.btn_add_template.grid(column=1, row = 2, sticky = 'nwse')
+        self.btn_del_template.grid(column=2, row = 2, sticky = 'nwse')
+        self.btn_load_template.grid(column=3,  row = 2,  sticky = 'nwse')
+        self.temp_text.grid(column = 0, row = 3, sticky='nwse')
         self.vertical_bar.grid(column = 1, row = 3,  sticky='nwse')
 
         self.template_tab.grid_columnconfigure(1, weight=7)
@@ -578,16 +578,16 @@ class gui_settings(gui_interface):
         self.col_2.grid_columnconfigure(0, weight=1)
 
 
-        self.parameters_tab.grid(column = 0,  row = 0, sticky = "nwse")
-        self.parameters_label.grid(sticky = "nwse")
-        self.rename_entry.grid(sticky = "nwse",  columnspan=2)
-        self.btn_rename_template.grid(row = 1,  column=4, sticky = "nwse")
+        self.parameters_tab.grid(column = 0,  row = 0, sticky = 'nwse')
+        self.parameters_label.grid(sticky = 'nwse')
+        self.rename_entry.grid(sticky = 'nwse',  columnspan=2)
+        self.btn_rename_template.grid(row = 1,  column=4, sticky = 'nwse')
 
         ### Config tab
-        self.configs_tab.grid(sticky="nwse")
+        self.configs_tab.grid(sticky='nwse')
         self.configs_tab.grid_columnconfigure(0,  weight=1)
 
-        
+
 
 
     def basic_ui_commmands(self):
@@ -631,20 +631,20 @@ class gui_settings(gui_interface):
                 self.config_items[conf]["entry"] = Spinbox(self.config_items[conf]["frame"],  from_ = 1,  to = 10,  textvariable=self.config_items[conf]["vars"])
             else:
                 self.config_items[conf]["entry"] = Entry(self.config_items[conf]["frame"],  width = 60)
-            self.config_items[conf]["frame"].grid(sticky="nwse")
+            self.config_items[conf]["frame"].grid(sticky='nwse')
             self.config_items[conf]["label"].grid(column = 1, row = 1, sticky="WE")
             self.config_items[conf]["entry"].grid(column = 2, row = 1, sticky="WE")
         self.load_config()
         self.set_config()
-        self.config_frame.grid(sticky="nwse")
-        self.config_label.grid(row = 0, sticky="nwse")
-        self.config_default.grid(row = 1,  column=1, sticky="nwse")
-        self.config_save.grid(row = 1,  column=2, sticky="nwse")
+        self.config_frame.grid(sticky='nwse')
+        self.config_label.grid(row = 0, sticky='nwse')
+        self.config_default.grid(row = 1,  column=1, sticky='nwse')
+        self.config_save.grid(row = 1,  column=2, sticky='nwse')
 
         self.config_default['command'] = self.restore_config
         self.config_save['command'] = self.save_config
 
-            
+
     def set_config(self):
         """
         Set the self.config value to all entries in configuration tab
@@ -718,13 +718,13 @@ class gui_settings(gui_interface):
     def templates(self):
         return cli.main(["--list-templates"])
 
-            
+
     def update_templates(self):
         self.file_list.delete(0, 'end')
         for i in self.templates:
             self.file_list.insert('end',  i)
 
-    
+
     def load_template(self,  event=None):
         path = self.configs["TEMPLATE_FOLDER"]
         self.selected_items = self.file_list.curselection()
@@ -785,7 +785,7 @@ class gui_settings(gui_interface):
 </article>
 
 </body>
-</html> 
+</html>
         '''
         return file
 
@@ -827,7 +827,7 @@ class gui_settings(gui_interface):
 
         os.remove(file_name)
 
-            
+
         self.update_templates()
 
     def remove_all_files(self):
