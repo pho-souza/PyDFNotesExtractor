@@ -1,33 +1,44 @@
 .callout_questao{
     background-color: #85e795;
-    border-radius: 1em;
+    border-radius: 0.2em;
     padding: 1em;
 }
 .callout_atencao{
     background-color: peru;
     padding: 1em;
-    border-radius: 1em;
+    border-radius: 0.2em;
 }
 .callout_exemplo{
     background-color: greenyellow;
-    border-radius: 1em;
+    border-radius: 0.2em;
     padding: 1em;
 }
 body{
     margin-left: 1em;
+    margin-right: 1em;
     background-color: #e2e2e2;
     font-family: 'Garamond', Times, serif;
 }
 article{
     margin: auto;
-    width: 50%;
+    min-width: 85%;
+    max-width: 100%;
+    /* width: 500px;*/
     border: 3px solid grey;
-    padding: 10px;
+    /* padding: 100px; */
     text-align:justify;
+    padding: 1em;
 }
 
 img{
-    width: 100%;
+    min-width: 50%;
+    align-items: center;
+    align-self: center;
+    max-width: 100%;
+}
+
+figcaption{
+  font-size: smaller;
 }
 
 h1, h2, h3{
@@ -53,14 +64,16 @@ img{
 
 /* Reset padrão */
 html, body {
-  margin: 0;
-  padding: 0;
+  margin-left: 5em;
+  margin-right: 5em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 /* Estilos globais */
 body {
-  font-family: Arial, sans-serif;
-  font-size: 16px;
+  font-family: 'Times New Roman', Times, serif, sans-serif;
+  font-size:medium;
   line-height: 1.5;
   color: #333;
 }
@@ -137,10 +150,6 @@ table {
 th, td {
   padding: 0.5em;
   border: 1px solid #ccc;
-}
-
-th {
-  background-color: #f0f0f0;
 }
 
 /* Estilos para citações acadêmicas */

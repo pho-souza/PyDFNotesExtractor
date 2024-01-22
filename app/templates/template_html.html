@@ -15,18 +15,25 @@
   <pre>
   {%- macro color_type(color) %}
   {%- if color == "Green" %}
-  <div class='callout_questao'>
+  <table class='callout_questao'>
+  <tr><th>
     <p class='font_questao'>Questão</p>
-    <hr/>
+  </th></tr>
+  <tr><th>
+
   {%- elif color == 'Orange' %}
-  <div class='callout_exemplo'>
+  <table class='callout_exemplo'>
+  <tr><th>
     <p class='font_exemplo'>Exemplo</p>
-    <hr/>
+  </th></tr>
+  <tr><th>
 
   {%- elif color == 'Red' %}
-  <div class='callout_atencao'>
+  <table class='callout_atencao'>
+  <tr><th>
     <p class='font_atencao'>Atenção</p>
-    <hr/>
+  </th></tr>
+  <tr><th>
 
   {%- endif -%}
   {%- endmacro %}
@@ -38,6 +45,9 @@
     {% if annot.type in ['Square','Ink'] %}
     {% if annot.has_img %}
     <img src="{{annot.img_path}}"/>
+    {% if annot.content %}
+    <figcaption>{{annot.content}}</figcaption>
+    {% endif %}
     {% endif %}
     {% elif annot.color_name == 'Cyan' %}
 
@@ -49,6 +59,9 @@
 
     {% elif annot.content.upper() == "#H3" or  annot.content.upper() == "H3" %}
     <h3>{{annot.text}}</h3>
+
+    {% elif annot.content.upper() == "#H4" or  annot.content.upper() == "H4" %}
+    <h4>{{annot.text}}</h4>
 
     {% else %}
     <h1>{{annot.text}}</h1>
@@ -107,7 +120,7 @@
     {% endif %}
     {% elif annot.content == '+' -%}
     {{color_type(annot.color_name)}}
-    > {{annot.text}} 
+    <ul><li>{{annot.text}} </li></ul>
 
     {%- elif annot.content %}
     {{color_type(annot.color_name)}}
@@ -130,7 +143,8 @@
 
 
     {% endif %}
-    </div>
+    </tr></tr>
+    </table>
     {% endif %}
     {%- if annot.content %}
     {%- set anterior.content = annot.content -%}
@@ -145,6 +159,5 @@
 
 </body>
 </html>
-
 
 

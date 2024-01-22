@@ -27,13 +27,13 @@ VERSION = __version__
 class BuildBinaryCommand(distutils.cmd.Command):
     description = 'build binary release'
     user_options = []
-    
+
     def initialize_options(self):
         pass
-    
+
     def finalize_options(self):
         pass
-    
+
     # noinspection PyShadowingNames
     def run(self):
         if sys.platform == 'darwin':
@@ -42,7 +42,7 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 filedata = filedata.replace('5.5.2', VERSION)
             with open(OSX_INFO_PLIST, 'w') as file:
                 file.write(filedata)
-                
+
             command_gui = f'pyinstaller --noconfirm --onefile --windowed --noupx --icon "app/gui_assets/logo.icns" --name "pydfannotsgui" --clean --additional-hooks-dir "."  "pydfannots-gui.py"'
             command_cli = f'pyinstaller --noconfirm --onefile  --name "pydfannots" --noupx --clean  "pydfannots.py"'
 
@@ -117,7 +117,7 @@ class BuildBinaryCommand(distutils.cmd.Command):
                 shutil.copytree('./app/templates', './dist/pydfannots_linux/app/templates', dirs_exist_ok=True, ignore_dangling_symlinks=True)
             except:
                 pass
-            
+
             exit(0)
         else:
             exit(0)
