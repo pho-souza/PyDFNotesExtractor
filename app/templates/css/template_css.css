@@ -3,27 +3,59 @@
     border-radius: 1em;
     padding: 1em;
 }
+.callout_questao th{
+  background-color: LimeGreen;
+  font-style: bold;
+  color: white;
+}
+.callout_questao td{
+  background-color: LightGreen;
+}
+
 .callout_atencao{
     background-color: peru;
     padding: 1em;
     border-radius: 1em;
 }
+.callout_atencao th{
+  background-color: DarkRed;
+  font-style: bold;
+  color: white;
+}
+.callout_atencao td{
+  background-color: IndianRed;
+}
+
+
 .callout_exemplo{
     background-color: greenyellow;
     border-radius: 1em;
     padding: 1em;
 }
+.callout_exemplo th{
+  background-color: OrangeRed;
+  font-style: bold;
+  color: white;
+}
+.callout_exemplo td{
+  background-color: LightSalmon;
+}
+
 body{
     margin-left: 1em;
     background-color: #e2e2e2;
     font-family: 'Garamond', Times, serif;
+    min-width: 75%;
+    max-width: 100%;
 }
 article{
     margin: auto;
-    width: 50%;
+    width: 85%;
     border: 3px solid grey;
     padding: 10px;
     text-align:justify;
+    min-width: 75%;
+    max-width: 100%;
 }
 
 img{
