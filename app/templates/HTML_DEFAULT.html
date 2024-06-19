@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+      {% include 'css/template_css.css' %}
+    </style>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+</head>
+<body>
+<pre>
+{%- macro color_type(color) %}
+{%- if color == "Green" %}
+<table class='callout_questao'>
+<tr><th>
+  <p class='font_questao'>❓Questão ❓</p>
+</th></tr>
+<tr><td>
+
+{%- elif color == 'Orange' %}
+<table class='callout_exemplo'>
+<tr><th>
+  <p class='font_exemplo'>Exemplo</p>
+</th></tr>
+<tr><td>
+
+{%- elif color == 'Red' %}
+<table class='callout_atencao'>
+<tr><th>
+  <p class='font_atencao'>⚠️ Atenção ⚠️</p>
+</th></tr>
+<tr><td>
+
+{%- elif color == 'Blue' %}
+<table class='callout_legislacao'>
+<tr><th>
+  <p class='font_atencao'>⚖️ Legislação ⚖️</p>
+</th></tr>
+<tr><td>
+
+{%- endif -%}
+{%- endmacro %}
+{%- set anterior = namespace(content='') %}
+{%- set texto = '' %}
+</pre>
+<article>
+{%- for annot in highlights %}
+  {% set texto = '' %}
+  {% if annot.type in ['Square', 'Ink'] %}
+    {% if annot.has_img %}
+        {% set texto = '<figure>\n' %}
+        {% set texto = texto + '<img src="' + annot.img_path + '" />' %}
+    {% endif %}
+    {% if annot.content %}
+        {% set texto = texto + '<figcaption>' + annot.content + '</figcaption>' %}
+    {% endif %}
+    {% set texto = texto + '\n</figure>'%}
+  {% elif annot.color_name == 'Cyan' %}
+    {% if annot.text %}
+        {% if annot.content.upper() == "#H1" or annot.content.upper() == "H1" %}
+            {% set texto = texto + '<h1>' + annot.text + '</h1>' %}
+        {% elif annot.content.upper() == "#H2" or annot.content.upper() == "H2" %}
+            {% set texto = texto + '<h2>' + annot.text + '</h2>' %}
+        {% elif annot.content.upper() == "#H3" or annot.content.upper() == "H3" %}
+            {% set texto = texto + '<h3>' + annot.text + '</h3>' %}
+        {% elif annot.content.upper() == "#H4" or annot.content.upper() == "H4" %}
+            {% set texto = texto + '<h4>' + annot.text + '</h4>' %}
+        {% else %}
+            {% set texto = texto + '<h1>' + annot.text + '</h1>' %}
+        {% endif %}
+    {% elif annot.content %}
+        {% set texto = texto + '<h1>' + annot.content + '</h1>' %}
+    {% endif %}
+  {% elif annot.color_name == 'Yellow' %}
+    {% if annot.content == '-' %}
+      {% set texto = texto + '<ul><li>' + annot.text + '</li></ul>' %}
+    {% elif annot.content == '+' and anterior.content == '+' %}
+        {% set texto = texto + ' ' + annot.text %}
+    {% elif anterior.content == '+' %}
+      {% if annot.text %}
+        {% set texto = texto + ' ' + annot.text %}
+      {% endif %}
+      {% if annot.content and annot.content != '+' %}
+        {% set texto = texto + '<ul><li>' + annot.content + '</li></ul>' %}
+      {% else %}
+        {% set texto = texto + ' ' + annot.text %}
+      {% endif %}
+    {% elif annot.content == '+' %}
+      {% set texto = texto + annot.text %}
+    {% elif annot.content and annot.text %}
+      {% set texto = texto + annot.text + '<ul><li>' + annot.content + '</li></ul>' %}
+    {% elif annot.content %}
+      {% set texto = texto + '<ul><li>' + annot.content + '</li></ul>' %}
+    {% endif %}
+  {% else %}
+    {% if annot.content != '+' and anterior.content != '+' and annot.text %}
+      {% set texto = texto + color_type(annot.color_name) %}
+      {% if annot.text %}
+        {% set texto = texto + '<p>' + annot.text + '</p>' %}
+      {% endif %}
+      {% if annot.content %}
+        {% set texto = texto + '<hr>' + '<p></p><ul><li>' + annot.content + '</li></ul></p>\n' %}
+      {% endif %}
+      {% set texto = texto + '</td></tr></table>' %}
+    {% elif annot.content == '+' and anterior.content == '+' and annot.text %}
+    
+      {% set texto = texto + ' ' + annot.text + ' ' %}
+    {% elif anterior.content == '+' and annot.text %}
+    
+      {% set texto = texto + ' ' + annot.text + '<p>\n'%}
+      {% if annot.content %}
+        {% set texto = texto  + '<hr><p><ul><li>' + annot.content + '</li></ul></p>' %}
+      {% endif %}
+       {% set texto = texto + '\n</td></tr></table>\n' %}
+    {% elif annot.content == '+' and annot.text %}
+    
+      {% set texto = texto + color_type(annot.color_name) +'\n' %}
+      {% set texto = texto + '<p>' + annot.text + ' ' %}
+    {% elif annot.content and annot.text %}
+    
+      {% set texto = texto + color_type(annot.color_name) %}
+      {% set texto = texto + '<p>' + annot.text + '</p>\n<hr><ul><li>' + annot.content + '</li></ul></td></tr></table>' %}
+    {% elif annot.text %}
+    
+      {% set texto = texto + color_type(annot.color_name) %}
+      {% set texto = texto + '<p>' + annot.text + '</p></td></tr></table>' %}
+    {% elif annot.content %}
+    
+      {% set texto = texto + color_type(annot.color_name) %}
+      {% set texto = texto + '<ul><li>' + annot.content + '</li></ul></td></tr></table>' %}
+    {% endif %}
+  {% endif %}
+  {{ texto }}
+  {% set anterior.content = annot.content if annot.content else '' %}
+{% endfor %}
+</article>
+
+</body>
+</html>

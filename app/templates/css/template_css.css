@@ -1,44 +1,61 @@
 .callout_questao{
     background-color: #85e795;
-    border-radius: 0.2em;
     padding: 1em;
+    border-color: green;
 }
+
+.callout_questao th{
+  background-color: green;
+}
+
 .callout_atencao{
-    background-color: peru;
+    background-color: lightcoral;
     padding: 1em;
-    border-radius: 0.2em;
+    border-color: rgb(171, 52, 52);
+}
+.callout_atencao th{
+  background-color: rgb(171, 52, 52);
+}
+.callout_exemplo th{
+    background-color: darkorange;
 }
 .callout_exemplo{
-    background-color: greenyellow;
-    border-radius: 0.2em;
-    padding: 1em;
+  background-color: orange;
+  border-color: darkorange;
+  padding: 1em;
 }
+
+.callout_legislacao th{
+  background-color: darkcyan;
+}
+.callout_legislacao{
+background-color: lightblue;
+border-color: darkcyan;
+padding: 1em;
+}
+
 body{
     margin-left: 1em;
-    margin-right: 1em;
     background-color: #e2e2e2;
     font-family: 'Garamond', Times, serif;
 }
+
+table{
+  margin-top: 1em;
+  margin-botton: 1em;
+}
+
 article{
     margin: auto;
-    min-width: 85%;
-    max-width: 100%;
-    /* width: 500px;*/
-    border: 3px solid grey;
-    /* padding: 100px; */
+    max-width: 95%;
+    min-width: 75%;
+    /*border: 3px solid grey;*/
+    padding: 10px;
     text-align:justify;
-    padding: 1em;
 }
 
 img{
-    min-width: 50%;
-    align-items: center;
-    align-self: center;
-    max-width: 100%;
-}
-
-figcaption{
-  font-size: smaller;
+    width: 100%;
 }
 
 h1, h2, h3{
@@ -63,17 +80,12 @@ img{
 }
 
 /* Reset padrão */
-html, body {
-  margin-left: 5em;
-  margin-right: 5em;
-  margin-top: 1em;
-  margin-bottom: 1em;
-}
+
 
 /* Estilos globais */
 body {
-  font-family: 'Times New Roman', Times, serif, sans-serif;
-  font-size:medium;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
   line-height: 1.5;
   color: #333;
 }
@@ -150,6 +162,10 @@ table {
 th, td {
   padding: 0.5em;
   border: 1px solid #ccc;
+}
+
+th {
+  background-color: #f0f0f0;
 }
 
 /* Estilos para citações acadêmicas */

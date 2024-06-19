@@ -38,7 +38,7 @@ class NoteExtractor:
         """
         self.close()
 
-    def add_pdf(self, file: str = ''):
+    def add_pdf(self, file: str = '', filebyte = None):
         """
         Load PDF file.
         """
@@ -53,7 +53,11 @@ class NoteExtractor:
             raise ValueError('This is not a PDF file.')
         elif os.path.getsize(file) == 0:
             raise ValueError('Cannot open empty PDF.')
-        self.file = file
+
+        if filebyte:
+            self.file = filebyte
+        else:
+            self.file = file
         self.pdf = fitz.open(self.file)
 
     def notes_extract(self, intersection_level: float = 0.1):
@@ -116,6 +120,23 @@ class NoteExtractor:
                     anotacao['rect_coord'][3] = (
                         anotacao['rect_coord'][3] / page_bound[3]
                     )
+                    
+                    # Check coord:
+                   #  bigger_than_page = True
+                    bigger_than_page = (
+                        anotacao['rect_coord'][0] < 0.0 or
+                        anotacao['rect_coord'][1] < 0.0 or
+                        anotacao['rect_coord'][2] < 0.0 or
+                        anotacao['rect_coord'][3] < 0.0 or
+                        anotacao['rect_coord'][0] > 1.0 or
+                        anotacao['rect_coord'][1] > 1.0 or
+                        anotacao['rect_coord'][2] > 1.0 or
+                        anotacao['rect_coord'][3] > 1.0
+                    )
+                    
+                    if bigger_than_page:
+                        continue
+
                     # print(annot.type[1])
                     anotacao['start_xy'] = anotacao['rect_coord'][0:2]
                     text = ''
@@ -409,16 +430,26 @@ class NoteExtractor:
                     pdf_page.delete_annot(annotation)
 
                 user_space = annot['rect_coord']
+                # for user_space_index in range(0, 4):
+                #     if user_space[user_space_index] < 0:
+                #         user_space[user_space_index] = 0
                 # area = pdf_page.get_pixmap(dpi = 300)
-                area = pdf_page.bound()
+                page_size = pdf_page.bound()
                 # area = area.derotation_matrix
+                
+                # print(page_size)
+                area = fitz.Rect()
 
-                area.x0 = user_space[0] * area.x1
-                area.x1 = user_space[2] * area.x1
-                area.y0 = user_space[1] * area.y1
-                area.y1 = user_space[3] * area.y1
+                area.x0 = user_space[0] * page_size.x1
+                area.x1 = user_space[2] * page_size.x1
+                area.y0 = user_space[1] * page_size.y1
+                area.y1 = user_space[3] * page_size.y1
+
 
                 clip = fitz.Rect(area.tl, area.br)
+                
+                if area.x0 == area.x1 or area.y0 == area.y1:
+                    continue
 
                 # clip.set_rotation(number_of_rotation)
                 # print(clip)
@@ -450,10 +481,21 @@ class NoteExtractor:
                 # img_folder = os.path.abspath(img_folder)
                 img_folder = re.sub('/+', '/', img_folder)
                 img_folder = utils.path_normalizer(img_folder)
+                
+                condition_size = clip.x0 >= 0.0 and clip.x1 >= 0.0 and clip.y0 >= 0.0 and clip.y1 >= 0.0
+                condition_height = clip.y0 >= page_size.y0  and clip.y1 <= page_size.y1
+                condition_width = clip.x0 >= page_size.x0  and clip.x1 <= page_size.x1
+                
+                # print(f'Condition size: {condition_size}')
+                # print(f'Condition height: {condition_height}')
+                # print(f'Condition width: {condition_width}')
+                # print(f'clip: {clip}')
+                # print(f'page_size: {page_size}')
 
-                img = pdf_page.get_pixmap(clip=clip, dpi=300)
-                # print(file_export)
-                img.save(file_export)
+                if condition_size and condition_height and condition_width:
+                    # print(page_size)
+                    img = pdf_page.get_pixmap(clip=clip, dpi=300)
+                    img.save(file_export)
 
                 if os.path.exists(file_export):
                     annot['has_img'] = True
