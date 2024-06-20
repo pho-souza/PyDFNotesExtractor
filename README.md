@@ -1,7 +1,9 @@
 # PyDFNotesExtractor
 
 This project pretends to reimplement the pdfannots repo using just PyMuPDF2.
-Information about config file,  templates and more [here](https://github.com/pho-souza/app/blob/main/doc/README.MD)
+Information about config file,  templates and more [here](doc/README.MD)
+
+https://github.com/pho-souza/PyDFannots/blob/main/doc/Annotation_Structure.md
 
 -----------
 
