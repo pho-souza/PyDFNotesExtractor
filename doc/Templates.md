@@ -44,13 +44,11 @@ You can split into multiple files for organizing your templates. To include anot
 To use custom templates,  you need import them first. To import a template,  you execute:
 
 ```
-PyDFannot --import-template <template1> <template2> ... <templaten>
+PyDFannot --import-template <template1> <template2> ... <template_nth>
 ```
 
 To delete an unused template,  you execute:
 
 ```bash
-PyDFannot --delete-template <template1> <template2> ... <templaten>
+PyDFannot --delete-template <template1> <template2> ... <template_nth>
 ```
-
-If you want to add a custom
