@@ -1,6 +1,6 @@
 # How to make templates?
 
-yDFannots uses the [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). Jinja2 is a templating language.
+PyDFannots uses the [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). Jinja2 is a templating language.
 
 ou can create basic templates basic using the following structure:
 
